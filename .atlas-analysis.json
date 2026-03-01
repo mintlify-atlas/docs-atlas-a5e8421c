@@ -1,0 +1,136 @@
+{
+  "projectType": "sdk-library",
+  "projectName": "Windmill Components",
+  "projectDescription": "A comprehensive collection of React components and hooks published as scoped npm packages for building modern user interfaces.",
+  "theme": "palm",
+  "primaryColor": "#3B82F6",
+  "lightColor": "#60A5FA",
+  "darkColor": "#1E40AF",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Components",
+            "pages": [
+              "components/loader",
+              "components/circlegauge"
+            ]
+          },
+          {
+            "group": "Form Components",
+            "pages": [
+              "form/overview",
+              "form/input",
+              "form/select",
+              "form/checkbox",
+              "form/radio",
+              "form/textarea",
+              "form/datepicker",
+              "form/fileinput",
+              "form/autocomplete",
+              "form/taginput",
+              "form/password",
+              "form/totpinput",
+              "form/draganddrop",
+              "form/progress"
+            ]
+          },
+          {
+            "group": "X-Form (FormData)",
+            "pages": [
+              "xform/overview",
+              "xform/components",
+              "xform/migration"
+            ]
+          },
+          {
+            "group": "UI Components",
+            "pages": [
+              "ui/carousel",
+              "ui/modal",
+              "ui/drawer",
+              "ui/popover",
+              "ui/toast",
+              "ui/cursor"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "utilities/editorparser",
+              "utilities/navigation",
+              "utilities/theme"
+            ]
+          },
+          {
+            "group": "Hooks",
+            "pages": [
+              "hooks/userefresh",
+              "hooks/useseo",
+              "hooks/usedrawer",
+              "hooks/usetoasts"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Packages",
+            "pages": [
+              "api/core",
+              "api/carousel",
+              "api/cursor",
+              "api/drawer",
+              "api/editorparser",
+              "api/form",
+              "api/xform",
+              "api/hooks",
+              "api/modal",
+              "api/navigation",
+              "api/popover",
+              "api/theme",
+              "api/toast"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Modular architecture with independent scoped packages",
+    "Comprehensive form components with validation support",
+    "FormData-focused form components for file uploads",
+    "Advanced UI components (Modal, Drawer, Toast, Carousel)",
+    "Reusable React hooks for common patterns",
+    "Theme management with multiple built-in themes",
+    "TypeScript support with full type definitions",
+    "Built with modern React patterns and Framer Motion animations"
+  ],
+  "publicApiSurface": [
+    "@jeremiemeunier/core: Loader, CircleGauge",
+    "@jeremiemeunier/carousel: Carousel",
+    "@jeremiemeunier/cursor: CustomCursor",
+    "@jeremiemeunier/drawer: DrawerProvider, useDrawer",
+    "@jeremiemeunier/editorparser: EditorParser",
+    "@jeremiemeunier/form: Input, Select, Checkbox, Radio, TextArea, DatePicker, FileInput, Autocomplete, TagInput, Password, TotpInput, DragAndDrop, Progress, Form, Group, Submit, Message",
+    "@jeremiemeunier/x-form: XForm, XInput, XSelect, XCheckbox, XRadio, XTextArea, XSubmit",
+    "@jeremiemeunier/hooks: useRefresh, useSeo",
+    "@jeremiemeunier/modal: Modal (with Background, Body, Close, Header, MenuLeft, MenuRight, ModalCenter, Navigation, Pages)",
+    "@jeremiemeunier/navigation: NavigationProvider, NavigationContext, Pagination",
+    "@jeremiemeunier/popover: Popover (with Trigger, Content)",
+    "@jeremiemeunier/theme: ThemeProvider, ThemeSelector, ThemeSwitch",
+    "@jeremiemeunier/toast: ToastProvider, useToasts, Toast"
+  ]
+}
