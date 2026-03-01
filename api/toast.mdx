@@ -1,0 +1,253 @@
+---
+title: '@jeremiemeunier/toast'
+description: 'Toast notification system with positioning and styling options'
+icon: 'bell'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/toast
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Overview
+
+A flexible toast notification system with support for different types, positions, icons, and animations.
+
+## Type Definitions
+
+```typescript
+interface ToastObject {
+  content: string;
+  type: "positive" | "negative" | "neutral" | null;
+  id?: number;
+  timer?: number;
+  duration?: number;
+  persistent?: boolean;
+  title?: string;
+  format?: {
+    icon?: "left" | "right" | "both";
+  };
+  position?: "tl" | "tr" | "bl" | "br" | "cl" | "cr";
+  icon?: string | string[];
+  loading?: boolean;
+  timed?: number;
+}
+
+interface ContextProps {
+  children: React.ReactNode;
+}
+```
+
+## Components
+
+### ToastContext
+
+Context provider for managing toast notifications.
+
+**Usage:**
+
+```tsx
+import { ToastContext } from '@jeremiemeunier/toast';
+
+function App() {
+  return (
+    <ToastContext>
+      <YourApp />
+    </ToastContext>
+  );
+}
+```
+
+### Toast
+
+Individual toast notification component.
+
+## Toast Configuration
+
+### Toast Types
+
+- `positive`: Success/confirmation messages (green)
+- `negative`: Error/warning messages (red)
+- `neutral`: Informational messages (gray)
+- `null`: Default styling
+
+### Position Options
+
+- `tl`: Top left
+- `tr`: Top right
+- `bl`: Bottom left
+- `br`: Bottom right
+- `cl`: Center left
+- `cr`: Center right
+
+### Icon Position
+
+- `left`: Icon on the left side
+- `right`: Icon on the right side
+- `both`: Icons on both sides
+
+## Using the Toast Hook
+
+```tsx
+import { useToast } from '@jeremiemeunier/toast';
+
+function MyComponent() {
+  const { addToast, removeToast } = useToast();
+
+  const showSuccessToast = () => {
+    addToast({
+      content: "Operation successful!",
+      type: "positive",
+      duration: 3000,
+      position: "tr"
+    });
+  };
+
+  const showErrorToast = () => {
+    addToast({
+      content: "Something went wrong",
+      type: "negative",
+      title: "Error",
+      duration: 5000,
+      position: "tr"
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={showSuccessToast}>Show Success</button>
+      <button onClick={showErrorToast}>Show Error</button>
+    </div>
+  );
+}
+```
+
+## Advanced Usage
+
+### Persistent Toast
+
+```tsx
+const showPersistentToast = () => {
+  addToast({
+    content: "This toast won't auto-dismiss",
+    type: "neutral",
+    persistent: true,
+    position: "bl"
+  });
+};
+```
+
+### Toast with Custom Icon
+
+```tsx
+const showCustomToast = () => {
+  addToast({
+    content: "Custom icon toast",
+    type: "positive",
+    icon: "🎉",
+    format: { icon: "left" },
+    duration: 4000
+  });
+};
+```
+
+### Loading Toast
+
+```tsx
+const showLoadingToast = () => {
+  const toastId = addToast({
+    content: "Loading...",
+    type: "neutral",
+    loading: true,
+    persistent: true
+  });
+
+  // Later, update or remove the toast
+  setTimeout(() => {
+    removeToast(toastId);
+    addToast({
+      content: "Complete!",
+      type: "positive"
+    });
+  }, 3000);
+};
+```
+
+### Toast with Title
+
+```tsx
+const showDetailedToast = () => {
+  addToast({
+    title: "Update Available",
+    content: "A new version of the app is ready to install",
+    type: "positive",
+    duration: 6000,
+    position: "tr"
+  });
+};
+```
+
+## Complete Example
+
+```tsx
+import { ToastContext, useToast } from '@jeremiemeunier/toast';
+
+function App() {
+  return (
+    <ToastContext>
+      <Dashboard />
+    </ToastContext>
+  );
+}
+
+function Dashboard() {
+  const { addToast } = useToast();
+
+  const handleSave = async () => {
+    try {
+      await saveData();
+      addToast({
+        content: "Data saved successfully",
+        type: "positive",
+        duration: 3000,
+        position: "br"
+      });
+    } catch (error) {
+      addToast({
+        title: "Save Failed",
+        content: error.message,
+        type: "negative",
+        duration: 5000,
+        position: "br"
+      });
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleSave}>Save</button>
+    </div>
+  );
+}
+```
+
+## Dependencies
+
+- **@jeremiemeunier/core**: ^1.4.4
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+
+## Exports
+
+```typescript
+export * from "./context";
+export * from "./components";
+```

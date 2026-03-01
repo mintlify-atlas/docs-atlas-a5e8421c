@@ -1,0 +1,88 @@
+---
+title: '@jeremiemeunier/cursor'
+description: 'Custom cursor component that frames links on hover'
+icon: 'cursor'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/cursor
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **Description**: Custom cursor component that frames links on hover
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### CustomCursor
+
+A custom cursor component that creates an animated cursor effect, framing links and interactive elements on hover.
+
+**Props:**
+
+```typescript
+type Smoothness = {
+  movement?: number;
+  resize?: number;
+};
+
+type CustomCursorProps = {
+  targets?: string;
+  padding?: number;
+  borderWidth?: number;
+  borderColor?: string;
+  radius?: number;
+  idleSize?: number;
+  smoothness?: Smoothness;
+  zIndex?: number;
+  disableOnTouch?: boolean;
+  className?: string;
+};
+```
+
+**Parameters:**
+
+- `targets` (optional): CSS selector for target elements
+- `padding` (optional): Padding around target elements
+- `borderWidth` (optional): Width of the cursor border
+- `borderColor` (optional): Color of the cursor border
+- `radius` (optional): Border radius of the cursor
+- `idleSize` (optional): Size of the cursor when idle
+- `smoothness` (optional): Animation smoothness configuration
+  - `movement`: Smoothness of cursor movement
+  - `resize`: Smoothness of cursor resize animation
+- `zIndex` (optional): Z-index of the cursor
+- `disableOnTouch` (optional): Disable cursor on touch devices
+- `className` (optional): Additional CSS class names
+
+**Usage:**
+
+```tsx
+import { CustomCursor } from '@jeremiemeunier/cursor';
+
+<CustomCursor
+  targets="a, button"
+  padding={10}
+  borderWidth={2}
+  borderColor="#3b82f6"
+  radius={8}
+  idleSize={8}
+  smoothness={{ movement: 0.3, resize: 0.3 }}
+/>
+```
+
+## Dependencies
+
+- **@jeremiemeunier/core**: ^1.4.4
+- **react**: ^19.1.1
+
+## Exports
+
+```typescript
+export * from "./components";
+```

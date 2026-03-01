@@ -1,0 +1,183 @@
+---
+title: "FileInput"
+description: "File upload component with file type validation"
+---
+
+## Overview
+
+The FileInput component provides a styled file input with support for file type restrictions and error handling.
+
+## Import
+
+```jsx
+import { FileInput } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { FileInput } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState(null);
+
+  return (
+    <FileInput
+      label="Upload Document"
+      setContent={setFile}
+      error={error}
+      accept={['*']}
+    />
+  );
+}
+```
+
+## Image Files Only
+
+```jsx
+const [imageFile, setImageFile] = useState(null);
+const [imageError, setImageError] = useState(null);
+
+return (
+  <FileInput
+    label="Profile Picture"
+    setContent={setImageFile}
+    error={imageError}
+    accept={['image/jpeg', 'image/png', 'image/gif']}
+  />
+);
+```
+
+## Document Files
+
+```jsx
+const [documentFile, setDocumentFile] = useState(null);
+const [documentError, setDocumentError] = useState(null);
+
+return (
+  <FileInput
+    label="Upload Resume"
+    setContent={setDocumentFile}
+    error={documentError}
+    accept={['application/pdf', '.doc', '.docx']}
+    required
+  />
+);
+```
+
+## With Validation
+
+```jsx
+const [uploadFile, setUploadFile] = useState(null);
+const [uploadError, setUploadError] = useState(null);
+
+const handleFileChange = (file) => {
+  setUploadError(null);
+  
+  if (file && file.size > 5000000) { // 5MB
+    setUploadError('File size must be less than 5MB');
+    return;
+  }
+  
+  setUploadFile(file);
+};
+
+return (
+  <FileInput
+    label="Upload File"
+    setContent={handleFileChange}
+    error={uploadError}
+    accept={['image/*', 'application/pdf']}
+  />
+);
+```
+
+## Required Field
+
+```jsx
+<FileInput
+  label="Contract Document"
+  setContent={setContractFile}
+  error={contractError}
+  accept={['application/pdf']}
+  required
+  tagline="PDF format only, max 10MB"
+/>
+```
+
+## Props
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<File | null>>" required>
+  State setter function for the selected file
+</ParamField>
+
+<ParamField path="error" type="any" required>
+  Error message to display if file selection fails validation
+</ParamField>
+
+<ParamField path="accept" type="string[]" required>
+  Array of accepted file types (MIME types or extensions)
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the file input
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the file input in grid units
+</ParamField>
+
+<ParamField path="required" type="boolean" default="false">
+  Marks the field as required
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="tagline" type="React.ReactNode">
+  Helper text displayed below the label
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface FileInputProps {
+  setContent: React.Dispatch<React.SetStateAction<null | File>>;
+  error: any;
+  accept: string[];
+  label?: string;
+  size?: number;
+  tagline?: React.ReactNode;
+  required?: boolean;
+  className?: string;
+  dataIsLoading?: boolean;
+}
+```
+
+## Accepted File Types
+
+Common MIME types for the `accept` prop:
+
+- `['*']` - All files
+- `['image/*']` - All images
+- `['image/jpeg', 'image/png']` - Specific image types
+- `['application/pdf']` - PDF files
+- `['.doc', '.docx']` - Word documents
+- `['.xls', '.xlsx']` - Excel files
+- `['video/*']` - All videos
+- `['audio/*']` - All audio files
+
+<Note>
+  The FileInput component only handles single file selection. For multiple files, use the DragAndDrop component.
+</Note>
+
+<Tip>
+  Always validate file size and type on the server side as client-side validation can be bypassed.
+</Tip>

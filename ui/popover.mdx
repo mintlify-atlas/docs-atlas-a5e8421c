@@ -1,0 +1,253 @@
+---
+title: Popover
+description: A React popover component with animation support for displaying contextual content on click.
+---
+
+## Overview
+
+The Popover component displays contextual content in a floating panel that appears when a trigger is clicked. It features smooth animations, configurable alignment, and automatic close behavior.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/popover
+```
+
+<Note>
+  This package requires `framer-motion` as a peer dependency.
+</Note>
+
+## Basic Usage
+
+```tsx
+import { Popover } from "@jeremiemeunier/popover";
+
+<Popover>
+  <Popover.Trigger>Click here</Popover.Trigger>
+  <Popover.Content>
+    <div>Popover content goes here</div>
+  </Popover.Content>
+</Popover>
+```
+
+## Subcomponents
+
+### Popover
+
+The root popover container.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Must include Popover.Trigger and Popover.Content.
+</ParamField>
+
+### Popover.Trigger
+
+The button that triggers the popover.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content (text, icons, etc.).
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the trigger button.
+</ParamField>
+
+<ParamField path="level" type="'primary' | 'secondary' | 'tertiary'">
+  Button style level.
+</ParamField>
+
+<ParamField path="format" type="'icon-only' | 'icon-left' | 'icon-right'">
+  Button format variant.
+</ParamField>
+
+<ParamField path="size" type="'sm' | 'sl'">
+  Button size.
+</ParamField>
+
+<ParamField path="title" type="string">
+  HTML title attribute for the button.
+</ParamField>
+
+<ParamField path="onClick" type="() => void">
+  Optional callback fired when trigger is clicked (in addition to opening/closing popover).
+</ParamField>
+
+### Popover.Content
+
+The content displayed in the popover panel.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Content to display in the popover.
+</ParamField>
+
+<ParamField path="align" type="'start' | 'center' | 'end'" default="'start'">
+  Alignment of the popover relative to the trigger.
+  - `start`: Left-aligned
+  - `center`: Center-aligned
+  - `end`: Right-aligned
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the popover content.
+</ParamField>
+
+## Examples
+
+### Simple Menu
+
+```tsx
+import { Popover } from "@jeremiemeunier/popover";
+
+export default function MenuExample() {
+  return (
+    <Popover>
+      <Popover.Trigger level="primary" size="sm">
+        Options
+      </Popover.Trigger>
+      <Popover.Content>
+        <ul>
+          <li>Edit</li>
+          <li>Duplicate</li>
+          <li>Delete</li>
+        </ul>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### Icon Trigger with Aligned Content
+
+```tsx
+import { Popover } from "@jeremiemeunier/popover";
+
+export default function IconMenu() {
+  return (
+    <Popover>
+      <Popover.Trigger 
+        level="secondary" 
+        format="icon-only"
+        title="More options"
+      >
+        <i className="icon ti ti-dots-vertical" />
+      </Popover.Trigger>
+      <Popover.Content align="end">
+        <div className="menu">
+          <button>Share</button>
+          <button>Export</button>
+          <button>Settings</button>
+        </div>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### User Profile Popover
+
+```tsx
+import { Popover } from "@jeremiemeunier/popover";
+
+export default function UserMenu() {
+  return (
+    <Popover>
+      <Popover.Trigger level="tertiary">
+        <img src="/avatar.jpg" alt="User" />
+        John Doe
+      </Popover.Trigger>
+      <Popover.Content align="center" className="user-popover">
+        <div>
+          <p>john.doe@example.com</p>
+          <hr />
+          <a href="/profile">View Profile</a>
+          <a href="/settings">Settings</a>
+          <hr />
+          <button>Sign Out</button>
+        </div>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### With Custom Click Handler
+
+```tsx
+import { Popover } from "@jeremiemeunier/popover";
+
+export default function TrackedPopover() {
+  const handleTriggerClick = () => {
+    console.log("Popover trigger clicked");
+    // Analytics tracking, etc.
+  };
+
+  return (
+    <Popover>
+      <Popover.Trigger 
+        level="primary" 
+        onClick={handleTriggerClick}
+      >
+        Open Menu
+      </Popover.Trigger>
+      <Popover.Content>
+        <div>
+          <p>Menu content</p>
+        </div>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### Rich Content Popover
+
+```tsx
+import { Popover } from "@jeremiemeunier/popover";
+
+export default function RichPopover() {
+  return (
+    <Popover>
+      <Popover.Trigger level="primary" size="sl">
+        Show Info
+      </Popover.Trigger>
+      <Popover.Content className="info-popover">
+        <div style={{ padding: "16px", maxWidth: "300px" }}>
+          <h3>Feature Information</h3>
+          <p>
+            This feature allows you to manage your account settings
+            and preferences in one place.
+          </p>
+          <img src="/feature-preview.png" alt="Preview" />
+          <button>Learn More</button>
+        </div>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+## Features
+
+- Click to open/close
+- Automatic close on click outside
+- Close with Escape key
+- Smooth animations via Framer Motion
+- Configurable alignment (start, center, end)
+- Customizable trigger button styles
+- Positioned absolutely relative to trigger
+- Accessible button semantics
+
+## Styling
+
+The popover content is positioned absolutely with:
+- 8px gap below the trigger
+- Z-index of 1000
+- Scale and opacity animations
+- Configurable alignment via `align` prop
+
+## Accessibility
+
+- Uses semantic `<button>` element for trigger
+- Supports `title` attribute for additional context
+- Keyboard accessible (Escape to close)
+- Proper focus management

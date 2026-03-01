@@ -1,0 +1,65 @@
+---
+title: '@jeremiemeunier/carousel'
+description: 'Carousel component for displaying sliding content'
+icon: 'images'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/carousel
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### Carousel
+
+A responsive carousel component for displaying multiple slides.
+
+**Props:**
+
+```typescript
+interface CarouselTypes {
+  slides: React.ReactNode[];
+  slidesNumber?: number;
+  className?: string;
+}
+```
+
+**Parameters:**
+
+- `slides` (required): Array of React nodes to display as slides
+- `slidesNumber` (optional): Number of slides to show at once
+- `className` (optional): Additional CSS class names
+
+**Usage:**
+
+```tsx
+import { Carousel } from '@jeremiemeunier/carousel';
+
+const slides = [
+  <div>Slide 1</div>,
+  <div>Slide 2</div>,
+  <div>Slide 3</div>,
+];
+
+<Carousel slides={slides} slidesNumber={1} />
+```
+
+## Dependencies
+
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+
+## Exports
+
+```typescript
+export * from "./components";
+```

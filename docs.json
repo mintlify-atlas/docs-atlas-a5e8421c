@@ -1,122 +1,123 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Windmill Components",
+  "theme": "palm",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#3B82F6",
+    "light": "#60A5FA",
+    "dark": "#1E40AF"
   },
-  "favicon": "/favicon.svg",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/jeremiemeunier/windmill-components"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/jeremiemeunier/windmill-components"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "installation",
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core Components",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "components/loader",
+              "components/circlegauge"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Form Components",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "form/overview",
+              "form/input",
+              "form/select",
+              "form/checkbox",
+              "form/radio",
+              "form/textarea",
+              "form/datepicker",
+              "form/fileinput",
+              "form/autocomplete",
+              "form/taginput",
+              "form/password",
+              "form/totpinput",
+              "form/draganddrop",
+              "form/progress"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "X-Form (FormData)",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "xform/overview",
+              "xform/components",
+              "xform/migration"
+            ]
+          },
+          {
+            "group": "UI Components",
+            "pages": [
+              "ui/carousel",
+              "ui/modal",
+              "ui/drawer",
+              "ui/popover",
+              "ui/toast",
+              "ui/cursor"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "utilities/editorparser",
+              "utilities/navigation",
+              "utilities/theme"
+            ]
+          },
+          {
+            "group": "Hooks",
+            "pages": [
+              "hooks/userefresh",
+              "hooks/useseo",
+              "hooks/usedrawer",
+              "hooks/usetoasts"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Packages",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api/core",
+              "api/carousel",
+              "api/cursor",
+              "api/drawer",
+              "api/editorparser",
+              "api/form",
+              "api/xform",
+              "api/hooks",
+              "api/modal",
+              "api/navigation",
+              "api/popover",
+              "api/theme",
+              "api/toast"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

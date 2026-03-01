@@ -1,0 +1,150 @@
+---
+title: '@jeremiemeunier/form'
+description: 'Comprehensive form components with state management'
+icon: 'rectangle-list'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/form
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Overview
+
+This package provides a complete set of form components with built-in state management, validation, and error handling. All form components use a controlled state pattern with `content` and `setContent` props.
+
+## Components
+
+### Form
+
+Main form container component.
+
+```typescript
+interface FormProps {
+  children: React.ReactNode;
+  handler: (event: FormEvent<HTMLFormElement>) => void;
+  encType?: FormEncType;
+  className?: string;
+}
+```
+
+### Input
+
+Standard text input component with validation.
+
+```typescript
+interface InputContent {
+  error: boolean;
+  message: string;
+  value: any | null;
+}
+
+interface InputProps {
+  content: InputContent;
+  setContent: React.Dispatch<React.SetStateAction<InputContent>>;
+  label?: string;
+  size?: number;
+  readOnly?: boolean;
+  tagline?: React.ReactNode;
+  type?: HTMLInputTypeAttribute;
+  maxLength?: number;
+  placeHolder?: string;
+  disabled?: boolean;
+  regex?: RegExp;
+  regexLabel?: string;
+  required?: boolean;
+  name?: string;
+  autofocus?: boolean;
+  autoComplete?: HTMLInputAutoCompleteAttribute;
+  className?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  dataIsLoading?: boolean;
+}
+```
+
+**Usage:**
+
+```tsx
+import { Input } from '@jeremiemeunier/form';
+
+const [emailContent, setEmailContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+<Input
+  content={emailContent}
+  setContent={setEmailContent}
+  label="Email"
+  type="email"
+  required
+/>
+```
+
+### Available Form Components
+
+The package exports the following components:
+
+- **Adress**: Address input component
+- **AutoComplete**: Autocomplete input with suggestions
+- **Checkbox**: Checkbox input
+- **CheckboxSlider**: Slider-style checkbox
+- **DatePicker**: Date selection component
+- **DragAndDrop**: File drag and drop area
+- **FileInput**: File input component
+- **Form**: Form container
+- **Group**: Form group container
+- **Input**: Text input
+- **Message**: Form message/alert component
+- **Password**: Password input with visibility toggle
+- **Progress**: Progress bar component
+- **Radio**: Radio button input
+- **Select**: Select dropdown
+- **Submit**: Submit button
+- **TagInput**: Tag input component
+- **TextArea**: Multi-line text input
+- **TotpInput**: TOTP/OTP input for authentication codes
+
+## State Management Pattern
+
+Most form components follow this state pattern:
+
+```tsx
+const [content, setContent] = useState<InputContent>({
+  error: false,
+  message: '',
+  value: null
+});
+
+<Component
+  content={content}
+  setContent={setContent}
+  // ... other props
+/>
+```
+
+## Dependencies
+
+- **@jeremiemeunier/core**: ^1.4.4
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-drag-drop-files**: ^3.1.0
+- **react-router-dom**: ^7.12.0
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export * from "./components";
+```

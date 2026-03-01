@@ -1,0 +1,156 @@
+---
+title: useRefresh
+description: A React hook for invalidating and refetching React Query queries
+---
+
+## Overview
+
+The `useRefresh` hook provides a convenient way to invalidate and refetch React Query queries based on query key patterns. It's useful when you need to refresh data after mutations or other state changes.
+
+## Installation
+
+```bash
+npm install @windmillui/hooks
+```
+
+## Usage
+
+```tsx
+import { useRefresh } from '@windmillui/hooks';
+
+function MyComponent() {
+  const { refreshing } = useRefresh();
+
+  const handleUpdate = async () => {
+    // Perform some update operation
+    await updateData();
+    
+    // Refresh queries that match the keys
+    refreshing(['users', 'posts']);
+  };
+
+  return (
+    <button onClick={handleUpdate}>
+      Update and Refresh
+    </button>
+  );
+}
+```
+
+## API Reference
+
+### Return Value
+
+The hook returns an object with the following property:
+
+#### `refreshing`
+
+```tsx
+refreshing: (key: string[]) => boolean
+```
+
+A function that invalidates and refetches queries matching the provided keys.
+
+**Parameters:**
+- `key`: `string[]` - An array of query key segments to match against
+
+**Returns:**
+- `boolean` - Always returns `true` after invalidating and refetching queries
+
+**Behavior:**
+- Invalidates all queries whose queryKey includes any of the provided key segments
+- Refetches all active queries whose queryKey includes any of the provided key segments
+- Only refetches queries that are currently active (mounted)
+
+## Examples
+
+### Basic Usage
+
+```tsx
+import { useRefresh } from '@windmillui/hooks';
+import { useMutation } from '@tanstack/react-query';
+
+function UserList() {
+  const { refreshing } = useRefresh();
+
+  const updateUserMutation = useMutation({
+    mutationFn: updateUser,
+    onSuccess: () => {
+      // Refresh all queries that include 'users' in their key
+      refreshing(['users']);
+    },
+  });
+
+  return (
+    <div>
+      {/* Your component content */}
+    </div>
+  );
+}
+```
+
+### Refreshing Multiple Query Groups
+
+```tsx
+import { useRefresh } from '@windmillui/hooks';
+
+function DashboardRefresh() {
+  const { refreshing } = useRefresh();
+
+  const handleRefreshAll = () => {
+    // Refresh multiple query groups at once
+    refreshing(['users', 'posts', 'comments', 'analytics']);
+  };
+
+  return (
+    <button onClick={handleRefreshAll}>
+      Refresh Dashboard
+    </button>
+  );
+}
+```
+
+### With Form Submission
+
+```tsx
+import { useRefresh } from '@windmillui/hooks';
+import { useForm } from 'react-hook-form';
+
+function CreatePostForm() {
+  const { refreshing } = useRefresh();
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await createPost(data);
+      
+      // Refresh posts and user's feed
+      refreshing(['posts', 'feed']);
+      
+      alert('Post created successfully!');
+    } catch (error) {
+      console.error('Failed to create post:', error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('title')} placeholder="Post title" />
+      <textarea {...register('content')} placeholder="Post content" />
+      <button type="submit">Create Post</button>
+    </form>
+  );
+}
+```
+
+## Notes
+
+- This hook requires `@tanstack/react-query` to be installed and configured in your application
+- The hook uses `useCallback` to memoize the `refreshing` function, ensuring stable references
+- Query keys are matched using an includes check, so partial matches will trigger refreshes
+- Only active queries are refetched, meaning queries that are currently mounted in your component tree
+
+## Related
+
+- [React Query Documentation](https://tanstack.com/query/latest)
+- [Query Invalidation Guide](https://tanstack.com/query/latest/docs/react/guides/query-invalidation)

@@ -1,0 +1,210 @@
+---
+title: "DatePicker"
+description: "Interactive calendar date picker with date restrictions and localization"
+---
+
+## Overview
+
+The DatePicker component provides an interactive calendar interface for selecting dates with support for blocking specific dates, weekends, and date ranges.
+
+## Import
+
+```jsx
+import { DatePicker } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { DatePicker } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [dateContent, setDateContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  return (
+    <DatePicker
+      label="Select Date"
+      content={dateContent}
+      setContent={setDateContent}
+    />
+  );
+}
+```
+
+## Block Past Dates
+
+```jsx
+<DatePicker
+  label="Appointment Date"
+  content={appointmentContent}
+  setContent={setAppointmentContent}
+  disabledOptions={['past']}
+/>
+```
+
+## Block Weekends
+
+```jsx
+<DatePicker
+  label="Business Date"
+  content={businessDateContent}
+  setContent={setBusinessDateContent}
+  disabledOptions={['weekend']}
+/>
+```
+
+## Block Specific Dates
+
+```jsx
+const blockedDates = [
+  '2024-12-25',
+  '2024-12-26',
+  '2024-01-01'
+];
+
+return (
+  <DatePicker
+    label="Delivery Date"
+    content={deliveryContent}
+    setContent={setDeliveryContent}
+    blockedDate={blockedDates}
+    disabledOptions={['weekend']}
+  />
+);
+```
+
+## Block Future Dates
+
+```jsx
+<DatePicker
+  label="Birth Date"
+  content={birthDateContent}
+  setContent={setBirthDateContent}
+  disabledOptions={['futur']}
+/>
+```
+
+## Block Specific Weekdays
+
+```jsx
+<DatePicker
+  label="Meeting Date"
+  content={meetingContent}
+  setContent={setMeetingContent}
+  disabledOptions={['monday', 'friday']}
+/>
+```
+
+## Without Today Button
+
+```jsx
+<DatePicker
+  label="Select Date"
+  content={dateContent}
+  setContent={setDateContent}
+  disabledTodayButton={true}
+/>
+```
+
+## Props
+
+<ParamField path="content" type="DatePickerContent" required>
+  State object containing `error`, `message`, and `value` (string in YYYY-MM-DD format) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<DatePickerContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the date picker
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the date picker in grid units
+</ParamField>
+
+<ParamField path="required" type="boolean" default="false">
+  Marks the field as required
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the date picker
+</ParamField>
+
+<ParamField path="readOnly" type="boolean" default="false">
+  Makes the date picker read-only
+</ParamField>
+
+<ParamField path="blockedDate" type="string[]">
+  Array of dates to block in YYYY-MM-DD format
+</ParamField>
+
+<ParamField path="disabledOptions" type="DisabledOption[]">
+  Array of options to disable. Available values:
+  - `"monday"` through `"sunday"` - Block specific weekdays
+  - `"weekend"` - Block Saturday and Sunday
+  - `"past"` or `"old"` - Block dates before today
+  - `"futur"` - Block dates after today
+</ParamField>
+
+<ParamField path="disabledTodayButton" type="boolean" default="false">
+  Hides the "Today" button in the calendar
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface DatePickerContent extends InputContent {
+  value: string; // YYYY-MM-DD format
+}
+
+type DisabledOption =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday"
+  | "weekend"
+  | "old"
+  | "past"
+  | "futur";
+
+interface DatePickerProps {
+  content: DatePickerContent;
+  setContent: React.Dispatch<React.SetStateAction<DatePickerContent>>;
+  size?: number;
+  readOnly?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  label?: string;
+  blockedDate?: string[];
+  disabledOptions?: DisabledOption[];
+  className?: string;
+  disabledTodayButton?: boolean;
+  dataIsLoading?: boolean;
+}
+```
+
+<Note>
+  The date value is stored in ISO format (YYYY-MM-DD). The calendar interface is currently in French but displays dates in a user-friendly format.
+</Note>
+
+<Tip>
+  Combine multiple `disabledOptions` to create complex date restrictions. For example, `['weekend', 'past']` blocks all weekends and past dates.
+</Tip>

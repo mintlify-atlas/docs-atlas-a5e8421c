@@ -1,0 +1,301 @@
+---
+title: CustomCursor
+description: A custom cursor component that automatically frames interactive elements with smooth animations.
+---
+
+## Overview
+
+The CustomCursor component creates a custom cursor that follows the mouse and automatically expands to frame interactive elements like links and buttons. It provides smooth animations and is highly customizable.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/cursor
+```
+
+## Basic Usage
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor />
+      <a href="#">My link</a>
+      <button>My button</button>
+    </>
+  );
+}
+```
+
+## Props
+
+<ParamField path="targets" type="string" default="'a, button, [data-cursor-target]'">
+  CSS selector for elements that should trigger the cursor frame animation. Use comma-separated selectors to target multiple element types.
+</ParamField>
+
+<ParamField path="padding" type="number" default="6">
+  Padding (in pixels) around the target element when the cursor frames it.
+</ParamField>
+
+<ParamField path="borderWidth" type="number" default="2">
+  Border width (in pixels) for the cursor outline.
+</ParamField>
+
+<ParamField path="borderColor" type="string" default="'black'">
+  CSS color value for the cursor border.
+</ParamField>
+
+<ParamField path="radius" type="number" default="6">
+  Border radius (in pixels) when framing target elements.
+</ParamField>
+
+<ParamField path="idleSize" type="number" default="18">
+  Size (in pixels) of the cursor dot when not hovering over a target.
+</ParamField>
+
+<ParamField path="smoothness" type="object" default="{ movement: 0.25, resize: 0.25 }">
+  Animation smoothness configuration:
+  - `movement`: Lerp factor for cursor position (0-1, lower = smoother but slower)
+  - `resize`: Lerp factor for size changes (0-1, lower = smoother but slower)
+</ParamField>
+
+<ParamField path="zIndex" type="number" default="9999">
+  Z-index value for the cursor container.
+</ParamField>
+
+<ParamField path="disableOnTouch" type="boolean" default="true">
+  Whether to disable the custom cursor on touch devices.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the cursor container.
+</ParamField>
+
+## Examples
+
+### Default Cursor
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor />
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </>
+  );
+}
+```
+
+### Custom Styling
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor
+        borderColor="#3b82f6"
+        borderWidth={3}
+        padding={8}
+        radius={12}
+        idleSize={20}
+      />
+      <button>Hover me</button>
+    </>
+  );
+}
+```
+
+### Custom Target Selector
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor
+        targets="a, button, .interactive, [data-clickable]"
+      />
+      <a href="#">Link</a>
+      <button>Button</button>
+      <div className="interactive">Interactive div</div>
+      <span data-clickable>Clickable span</span>
+    </>
+  );
+}
+```
+
+### Data Attribute Targeting
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor targets="[data-cursor-target]" />
+      <div data-cursor-target>
+        <img src="/image.jpg" alt="Product" />
+      </div>
+      <div data-cursor-target>
+        <h3>Hover me</h3>
+      </div>
+    </>
+  );
+}
+```
+
+### Smooth Animation
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor
+        smoothness={{
+          movement: 0.15, // Very smooth following
+          resize: 0.2,    // Smooth size transitions
+        }}
+      />
+      <button>Hover for smooth animation</button>
+    </>
+  );
+}
+```
+
+### Fast and Snappy
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor
+        smoothness={{
+          movement: 0.5, // Fast following
+          resize: 0.5,   // Quick size changes
+        }}
+      />
+      <button>Hover for snappy animation</button>
+    </>
+  );
+}
+```
+
+### Large Idle Cursor
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor
+        idleSize={32}
+        borderWidth={3}
+      />
+      <p>Move your cursor around</p>
+    </>
+  );
+}
+```
+
+### Colored Cursor Theme
+
+```tsx
+import { CustomCursor } from "@jeremiemeunier/cursor";
+
+export default function App() {
+  return (
+    <>
+      <CustomCursor
+        borderColor="#8b5cf6"
+        borderWidth={2}
+        padding={10}
+        radius={8}
+      />
+      <div style={{ backgroundColor: '#1a1a1a', padding: '2rem' }}>
+        <a href="#" style={{ color: '#8b5cf6' }}>Purple themed link</a>
+      </div>
+    </>
+  );
+}
+```
+
+## Features
+
+- Smooth cursor following with configurable lerp
+- Automatic framing of interactive elements
+- Customizable appearance (color, size, border)
+- Configurable target selectors
+- Smooth size transitions when hovering
+- Idle state with circular cursor dot
+- Active state with rounded rectangle frame
+- Touch device detection and optional disable
+- SSR-safe (returns null on server)
+- Keyboard navigation friendly (Escape to close)
+
+## Behavior
+
+### Idle State
+- Displays a small circular dot that follows the cursor
+- Size controlled by `idleSize` prop
+- Smooth following motion
+
+### Active State (Hovering Target)
+- Expands to frame the target element
+- Adds padding around the element
+- Transitions to rounded rectangle shape
+- Hides the idle dot
+- Centers on the target element
+
+### Animation
+- Uses `requestAnimationFrame` for smooth 60fps animation
+- Lerp (linear interpolation) for smooth transitions
+- Separate smoothness controls for movement and resizing
+- CSS transitions for opacity changes
+
+## Performance
+
+- Uses refs to avoid unnecessary re-renders
+- Efficient event listeners with passive mode
+- requestAnimationFrame loop for smooth animations
+- Minimal DOM updates
+- Automatic cleanup on unmount
+
+## Accessibility
+
+- Does not interfere with native cursor behavior
+- Includes `aria-hidden="true"` on cursor elements
+- Pointer events disabled on cursor (allows clicking through)
+- Automatically disabled on touch devices by default
+- Does not affect keyboard navigation
+
+## Browser Support
+
+Works in all modern browsers that support:
+- CSS transforms
+- requestAnimationFrame
+- Mouse events
+- getBoundingClientRect
+
+## Tips
+
+- Lower `smoothness` values (e.g., 0.1-0.2) create more fluid, trailing motion
+- Higher `smoothness` values (e.g., 0.4-0.6) create snappier, more responsive motion
+- Adjust `padding` to control how much space appears around framed elements
+- Use `data-cursor-target` attribute for custom elements that aren't links or buttons
+- Set `disableOnTouch: false` if you want the cursor on tablets

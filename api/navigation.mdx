@@ -1,0 +1,147 @@
+---
+title: '@jeremiemeunier/navigation'
+description: 'Navigation components including pagination and routing context'
+icon: 'compass'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/navigation
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### Pagination
+
+A pagination component for navigating through pages of content.
+
+```typescript
+interface PaginationProps {
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  pages?: number;
+  sticky?: number;
+  noSelect?: boolean;
+}
+```
+
+**Parameters:**
+
+- `page` (required): Current page number
+- `setPage` (required): Function to update the current page
+- `pages` (optional): Total number of pages
+- `sticky` (optional): Number of pages to show before/after current
+- `noSelect` (optional): Disable page selection dropdown
+
+**Usage:**
+
+```tsx
+import { Pagination } from '@jeremiemeunier/navigation';
+import { useState } from 'react';
+
+function MyList() {
+  const [page, setPage] = useState(1);
+  const totalPages = 10;
+
+  return (
+    <div>
+      {/* List content */}
+      <Pagination
+        page={page}
+        setPage={setPage}
+        pages={totalPages}
+        sticky={2}
+      />
+    </div>
+  );
+}
+```
+
+## Context API
+
+### NavigationContext
+
+A context provider for managing navigation state across your application.
+
+```typescript
+interface ContextProps {
+  children: React.ReactNode;
+}
+
+interface ProviderProps {
+  appActualPage: string;
+  setAppActualPage: React.Dispatch<SetStateAction<string>>;
+  appActualSubPage: string;
+  setAppActualSubPage: React.Dispatch<SetStateAction<string>>;
+  appActualCategory: string;
+  setAppActualCategory: React.Dispatch<SetStateAction<string>>;
+  appMenuVisibility: boolean;
+  setAppMenuVisibility: React.Dispatch<SetStateAction<boolean>>;
+}
+```
+
+**Context Values:**
+
+- `appActualPage`: Current main page
+- `setAppActualPage`: Update main page
+- `appActualSubPage`: Current sub-page
+- `setAppActualSubPage`: Update sub-page
+- `appActualCategory`: Current category
+- `setAppActualCategory`: Update category
+- `appMenuVisibility`: Menu visibility state
+- `setAppMenuVisibility`: Toggle menu visibility
+
+**Usage:**
+
+```tsx
+import { NavigationContext, useNavigation } from '@jeremiemeunier/navigation';
+
+function App() {
+  return (
+    <NavigationContext>
+      <YourApp />
+    </NavigationContext>
+  );
+}
+
+function YourComponent() {
+  const {
+    appActualPage,
+    setAppActualPage,
+    appMenuVisibility,
+    setAppMenuVisibility
+  } = useNavigation();
+
+  return (
+    <div>
+      <button onClick={() => setAppMenuVisibility(!appMenuVisibility)}>
+        Toggle Menu
+      </button>
+      <p>Current page: {appActualPage}</p>
+    </div>
+  );
+}
+```
+
+## Dependencies
+
+- **@jeremiemeunier/core**: ^1.4.4
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export * from "./components";
+export * from "./context";
+```

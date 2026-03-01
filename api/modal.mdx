@@ -1,0 +1,201 @@
+---
+title: '@jeremiemeunier/modal'
+description: 'Modal dialog components with flexible layouts'
+icon: 'window-maximize'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/modal
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### Modal
+
+Main modal container component.
+
+```typescript
+interface ModalProps {
+  children: React.ReactNode;
+}
+```
+
+### Modal.Container
+
+Configurable modal container with size and layout options.
+
+```typescript
+interface ModalContainerProps {
+  children: React.ReactNode;
+  size?: "small" | "medium" | "large" | "fullscreen" | "sl" | "sm" | "sf";
+  template?: "menu" | undefined;
+  direction?: "top" | "bottom";
+  maxHeight?: string;
+}
+```
+
+**Parameters:**
+
+- `size` (optional): Modal size
+  - `"small"`: Small modal
+  - `"medium"`: Medium modal (default)
+  - `"large"`: Large modal
+  - `"fullscreen"`: Full screen modal
+  - `"sl"`: Small to large
+  - `"sm"`: Small to medium
+  - `"sf"`: Small to fullscreen
+- `template` (optional): Layout template (e.g., "menu")
+- `direction` (optional): Animation direction ("top" or "bottom")
+- `maxHeight` (optional): Maximum height of modal
+
+### Modal.Header
+
+Modal header section.
+
+```typescript
+interface HeaderProps {
+  children: React.ReactNode;
+}
+```
+
+### Modal.Body
+
+Modal body content area.
+
+```typescript
+interface BodyProps {
+  children: React.ReactNode;
+}
+```
+
+### Modal.Close
+
+Close button component with optional refresh handler.
+
+```typescript
+interface CloseProps {
+  setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshHandler?: () => void;
+}
+```
+
+### Modal.Navigation
+
+Navigation container for tabbed modals.
+
+```typescript
+interface NavigationProps {
+  children: React.ReactNode;
+}
+```
+
+### Modal.NavigationItem
+
+Individual navigation tab item.
+
+```typescript
+interface NavigationItemProps {
+  label: string;
+  setPage: React.Dispatch<React.SetStateAction<string | number>>;
+  isActive: boolean;
+  pageId: string | number;
+}
+```
+
+## Usage
+
+### Basic Modal
+
+```tsx
+import { Modal } from '@jeremiemeunier/modal';
+import { useState } from 'react';
+
+function MyModal() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+      
+      {isOpen && (
+        <Modal>
+          <Modal.Container size="medium">
+            <Modal.Header>
+              <h2>Modal Title</h2>
+              <Modal.Close setVisibility={setIsOpen} />
+            </Modal.Header>
+            <Modal.Body>
+              <p>Modal content goes here</p>
+            </Modal.Body>
+          </Modal.Container>
+        </Modal>
+      )}
+    </>
+  );
+}
+```
+
+### Modal with Navigation
+
+```tsx
+import { Modal } from '@jeremiemeunier/modal';
+import { useState } from 'react';
+
+function TabbedModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState('tab1');
+
+  return (
+    <Modal>
+      <Modal.Container size="large">
+        <Modal.Header>
+          <h2>Settings</h2>
+          <Modal.Close setVisibility={setIsOpen} />
+        </Modal.Header>
+        
+        <Modal.Navigation>
+          <Modal.NavigationItem
+            label="General"
+            setPage={setPage}
+            isActive={page === 'tab1'}
+            pageId="tab1"
+          />
+          <Modal.NavigationItem
+            label="Advanced"
+            setPage={setPage}
+            isActive={page === 'tab2'}
+            pageId="tab2"
+          />
+        </Modal.Navigation>
+        
+        <Modal.Body>
+          {page === 'tab1' && <div>General settings</div>}
+          {page === 'tab2' && <div>Advanced settings</div>}
+        </Modal.Body>
+      </Modal.Container>
+    </Modal>
+  );
+}
+```
+
+## Dependencies
+
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export * from "./components";
+```

@@ -1,0 +1,249 @@
+---
+title: "Autocomplete"
+description: "Searchable dropdown with filtering and custom data sources"
+---
+
+## Overview
+
+The Autocomplete component provides a searchable dropdown that filters options as you type, perfect for large datasets and dynamic searches.
+
+## Import
+
+```jsx
+import { AutoComplete } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { AutoComplete } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [countryContent, setCountryContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  const countries = [
+    { label: 'United States', value: 'us' },
+    { label: 'United Kingdom', value: 'uk' },
+    { label: 'Canada', value: 'ca' },
+    { label: 'France', value: 'fr' },
+    { label: 'Germany', value: 'de' }
+  ];
+
+  return (
+    <AutoComplete
+      label="Country"
+      content={countryContent}
+      setContent={setCountryContent}
+      data={countries}
+      dataIsLoading={false}
+      placeHolder="Search for a country"
+    />
+  );
+}
+```
+
+## With Details
+
+```jsx
+const users = [
+  { 
+    label: 'John Doe', 
+    value: 'john@example.com',
+    details: 'Administrator'
+  },
+  { 
+    label: 'Jane Smith', 
+    value: 'jane@example.com',
+    details: 'Editor'
+  },
+  { 
+    label: 'Bob Johnson', 
+    value: 'bob@example.com',
+    details: 'Viewer'
+  }
+];
+
+return (
+  <AutoComplete
+    label="Assign to"
+    content={userContent}
+    setContent={setUserContent}
+    data={users}
+    dataIsLoading={false}
+    placeHolder="Search users"
+  />
+);
+```
+
+## Custom Keys
+
+```jsx
+const products = [
+  { name: 'Laptop Pro', sku: 'LPTP-001', price: '$1,299' },
+  { name: 'Wireless Mouse', sku: 'WMSE-002', price: '$29' },
+  { name: 'Keyboard', sku: 'KBRD-003', price: '$79' }
+];
+
+return (
+  <AutoComplete
+    label="Product"
+    content={productContent}
+    setContent={setProductContent}
+    data={products}
+    labelKey="name"
+    valueKey="sku"
+    dataIsLoading={false}
+  />
+);
+```
+
+## With Loading State
+
+```jsx
+const [cityContent, setCityContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+const [cities, setCities] = useState([]);
+const [loading, setLoading] = useState(false);
+
+const fetchCities = async (query) => {
+  setLoading(true);
+  try {
+    const response = await fetch(`/api/cities?q=${query}`);
+    const data = await response.json();
+    setCities(data);
+  } finally {
+    setLoading(false);
+  }
+};
+
+return (
+  <AutoComplete
+    label="City"
+    content={cityContent}
+    setContent={setCityContent}
+    data={cities}
+    dataIsLoading={loading}
+    placeHolder="Type to search cities"
+  />
+);
+```
+
+## Required Field
+
+```jsx
+<AutoComplete
+  label="Department"
+  content={deptContent}
+  setContent={setDeptContent}
+  data={departments}
+  dataIsLoading={false}
+  required
+  placeHolder="Select department"
+/>
+```
+
+## Props
+
+<ParamField path="content" type="AutoCompleteContent" required>
+  State object containing `error`, `message`, and `value` (string) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<AutoCompleteContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="data" type="DataItems[]" required>
+  Array of options to display and search through
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" required>
+  Whether data is currently being loaded
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the autocomplete
+</ParamField>
+
+<ParamField path="placeHolder" type="string">
+  Placeholder text shown when input is empty
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the autocomplete in grid units
+</ParamField>
+
+<ParamField path="required" type="boolean" default="false">
+  Marks the field as required
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the autocomplete
+</ParamField>
+
+<ParamField path="readOnly" type="boolean" default="false">
+  Makes the autocomplete read-only
+</ParamField>
+
+<ParamField path="maxLength" type="number">
+  Maximum character count for the input
+</ParamField>
+
+<ParamField path="labelKey" type="string" default="label">
+  Key in data objects to use for display text
+</ParamField>
+
+<ParamField path="valueKey" type="string" default="value">
+  Key in data objects to use for stored value
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface AutoCompleteContent extends InputContent {
+  value: string;
+}
+
+interface DataItems {
+  [key: string]: any;
+  label?: string;
+  value?: string;
+  details?: string;
+}
+
+interface AutoCompleteProps {
+  content: AutoCompleteContent;
+  setContent: React.Dispatch<React.SetStateAction<AutoCompleteContent>>;
+  data: DataItems[];
+  label?: string;
+  disabled?: boolean;
+  size?: number;
+  readOnly?: boolean;
+  maxLength?: number;
+  placeHolder?: string;
+  required?: boolean;
+  className?: string;
+  dataIsLoading: boolean;
+  labelKey?: string;
+  valueKey?: string;
+}
+```
+
+<Note>
+  The component filters options based on the `labelKey` field (default: "label") and stores the `valueKey` field (default: "value") in the content state.
+</Note>
+
+<Tip>
+  Use custom `labelKey` and `valueKey` props to work with any data structure without transforming your data.
+</Tip>

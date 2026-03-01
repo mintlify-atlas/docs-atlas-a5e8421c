@@ -1,0 +1,111 @@
+---
+title: '@jeremiemeunier/popover'
+description: 'Popover component for tooltips and contextual content'
+icon: 'message'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/popover
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### Popover
+
+A popover component for displaying contextual content, tooltips, or dropdown menus.
+
+**Type Definitions:**
+
+```typescript
+export { default as Popover } from "./components/Popover";
+export * from "./components/Popover.types";
+```
+
+**Usage:**
+
+```tsx
+import { Popover } from '@jeremiemeunier/popover';
+
+<Popover
+  trigger={<button>Hover me</button>}
+  content={
+    <div>
+      <p>Popover content goes here</p>
+    </div>
+  }
+/>
+```
+
+## Features
+
+- Automatic positioning to stay within viewport
+- Support for hover and click triggers
+- Animated transitions using Framer Motion
+- Customizable styling and positioning
+- Portal rendering for proper z-index layering
+
+## Common Use Cases
+
+### Tooltip
+
+```tsx
+<Popover
+  trigger={<span>Hover for info</span>}
+  content="This is a helpful tooltip"
+  position="top"
+/>
+```
+
+### Dropdown Menu
+
+```tsx
+<Popover
+  trigger={<button>Options</button>}
+  content={
+    <ul>
+      <li>Edit</li>
+      <li>Delete</li>
+      <li>Share</li>
+    </ul>
+  }
+  triggerOn="click"
+/>
+```
+
+### Info Panel
+
+```tsx
+<Popover
+  trigger={<InfoIcon />}
+  content={
+    <div className="info-panel">
+      <h4>Additional Information</h4>
+      <p>Detailed content here</p>
+    </div>
+  }
+  position="right"
+/>
+```
+
+## Dependencies
+
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.8.1
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export { default as Popover } from "./components/Popover";
+export * from "./components/Popover.types";
+```

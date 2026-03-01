@@ -1,0 +1,195 @@
+---
+title: X-Form Overview
+description: FormData-focused form components for file uploads and server-side processing
+---
+
+## Introduction
+
+**@jeremiemeunier/x-form** is a FormData-focused fork of the form components from `@jeremiemeunier/form`. This package is specifically designed to work exclusively with the `FormData` API, making it ideal for applications that need to handle file uploads, multipart form data, or prefer server-side form processing.
+
+## Key Features
+
+- **FormData-Only**: All components are designed to work with native FormData extraction
+- **No State Management**: Components use uncontrolled inputs with `defaultValue` instead of controlled state
+- **Simplified API**: Automatic FormData handling removes the need for manual state management
+- **Native HTML**: Leverages native HTML form behavior for better performance and compatibility
+- **File Upload Ready**: All forms automatically include `enctype="multipart/form-data"`
+
+## Installation
+
+1. Add a `.npmrc` file at the root of your project:
+   ```npmrc
+   @jeremiemeunier:registry=https://npm.pkg.github.com
+   ```
+
+2. Install the required packages:
+   ```bash
+   npm install @jeremiemeunier/core @jeremiemeunier/x-form
+   ```
+
+3. Import the components in your application:
+   ```tsx
+   import { XForm, XInput, XSubmit } from "@jeremiemeunier/x-form";
+   ```
+
+## Basic Usage
+
+### Simple Form Example
+
+```tsx
+import { XForm, XInput, XTextArea, XSubmit } from "@jeremiemeunier/x-form";
+
+function MyForm() {
+  const handleSubmit = (formData: FormData) => {
+    // Access form data directly
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const message = formData.get("message");
+    
+    console.log({ name, email, message });
+    
+    // Or send it directly to an API
+    fetch("/api/submit", {
+      method: "POST",
+      body: formData,
+    });
+  };
+
+  return (
+    <XForm onSubmit={handleSubmit}>
+      <XInput
+        name="name"
+        label="Name"
+        placeholder="Enter your name"
+        required
+      />
+      <XInput
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        required
+      />
+      <XTextArea
+        name="message"
+        label="Message"
+        placeholder="Enter your message"
+        rows={5}
+        required
+      />
+      <XSubmit label="Send Message" />
+    </XForm>
+  );
+}
+```
+
+### File Upload Example
+
+```tsx
+import { XForm, XInput, XSubmit } from "@jeremiemeunier/x-form";
+
+function FileUploadForm() {
+  const handleSubmit = (formData: FormData) => {
+    // Files are automatically included in FormData
+    const file = formData.get("document");
+    
+    fetch("/api/upload", {
+      method: "POST",
+      body: formData, // Includes the file with proper encoding
+    });
+  };
+
+  return (
+    <XForm onSubmit={handleSubmit}>
+      <XInput
+        name="title"
+        label="Document Title"
+        required
+      />
+      <XInput
+        name="document"
+        label="Upload Document"
+        type="file"
+        required
+      />
+      <XSubmit label="Upload" />
+    </XForm>
+  );
+}
+```
+
+## Working with FormData
+
+FormData provides a powerful API for working with form data:
+
+```tsx
+const handleSubmit = (formData: FormData) => {
+  // Get a single value
+  const name = formData.get("name");
+  
+  // Get all values for a name (useful for multiple checkboxes)
+  const interests = formData.getAll("interests");
+  
+  // Check if a field exists
+  if (formData.has("email")) {
+    const email = formData.get("email");
+  }
+  
+  // Iterate over all entries
+  for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+  
+  // Convert to object (simple fields only)
+  const data = Object.fromEntries(formData.entries());
+  
+  // Send to API
+  fetch("/api/endpoint", {
+    method: "POST",
+    body: formData, // Automatically sets correct headers
+  });
+};
+```
+
+## Benefits of FormData Approach
+
+1. **Simpler Code**: No state management needed for form fields
+2. **Better Performance**: Uncontrolled components are faster
+3. **File Upload Support**: Native file handling without extra libraries
+4. **Server-Side Friendly**: FormData works seamlessly with server endpoints
+5. **Progressive Enhancement**: Works even if JavaScript fails
+6. **Less Boilerplate**: No need for onChange handlers and state updates
+
+## When to Use X-Form
+
+X-Form is ideal when:
+
+- You need to handle file uploads
+- You're submitting data directly to a server endpoint
+- You prefer uncontrolled components over controlled state
+- You want to minimize client-side state management
+- You need multipart/form-data encoding
+
+For forms that require real-time validation, complex state interactions, or dynamic field updates, consider using the stateful `@jeremiemeunier/form` package instead.
+
+## Styling
+
+All components use the same CSS classes as `@jeremiemeunier/form`, ensuring visual consistency:
+
+- `windmillui-form` - Form container
+- `windmillui-form-container` - Field container
+- `windmillui-input` - Input wrapper
+- `windmillui-checkbox` - Checkbox wrapper
+- `windmillui-radio` - Radio button wrapper
+- `windmillui-button` - Button styles
+
+Make sure to include the core styles from `@jeremiemeunier/core`.
+
+## Browser Support
+
+FormData is supported in all modern browsers. For legacy browser support, consider using a polyfill.
+
+## Next Steps
+
+- [View all components](/xform/components)
+- [Migration guide from @jeremiemeunier/form](/xform/migration)

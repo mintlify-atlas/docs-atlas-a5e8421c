@@ -1,0 +1,234 @@
+---
+title: "TotpInput"
+description: "One-time password input component for verification codes"
+---
+
+## Overview
+
+The TotpInput component provides a specialized input for one-time passwords (OTP), verification codes, and 2FA tokens with automatic focus management.
+
+## Import
+
+```jsx
+import { TotpInput } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { TotpInput } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [totpContent, setTotpContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  return (
+    <TotpInput
+      label="Verification Code"
+      content={totpContent}
+      setContent={setTotpContent}
+      totpSize={6}
+    />
+  );
+}
+```
+
+## 4-Digit Code
+
+```jsx
+const [pinContent, setPinContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+return (
+  <TotpInput
+    label="PIN Code"
+    content={pinContent}
+    setContent={setPinContent}
+    totpSize={4}
+  />
+);
+```
+
+## With Validation
+
+```jsx
+const [codeContent, setCodeContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+const verifyCode = async () => {
+  if (codeContent.value.length !== 6) {
+    setCodeContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Please enter all 6 digits'
+    }));
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/verify', {
+      method: 'POST',
+      body: JSON.stringify({ code: codeContent.value })
+    });
+    
+    if (!response.ok) {
+      setCodeContent(prev => ({
+        ...prev,
+        error: true,
+        message: 'Invalid verification code'
+      }));
+    }
+  } catch (error) {
+    setCodeContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Verification failed'
+    }));
+  }
+};
+
+return (
+  <>
+    <TotpInput
+      label="2FA Code"
+      content={codeContent}
+      setContent={setCodeContent}
+      totpSize={6}
+      required
+    />
+    <button onClick={verifyCode}>Verify</button>
+  </>
+);
+```
+
+## Alphanumeric Code
+
+```jsx
+const [alphaCodeContent, setAlphaCodeContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+return (
+  <TotpInput
+    label="Activation Code"
+    content={alphaCodeContent}
+    setContent={setAlphaCodeContent}
+    totpSize={8}
+    isAlphaNumeric={true}
+  />
+);
+```
+
+## Read-Only (Locked)
+
+```jsx
+<TotpInput
+  label="Verified Code"
+  content={verifiedContent}
+  setContent={setVerifiedContent}
+  totpSize={6}
+  locked={true}
+/>
+```
+
+## Props
+
+<ParamField path="content" type="TotpContent" required>
+  State object containing `error`, `message`, and `value` (string) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<TotpContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the input
+</ParamField>
+
+<ParamField path="totpSize" type="number" default="6">
+  Number of input fields (digits in the code)
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the component in grid units
+</ParamField>
+
+<ParamField path="required" type="boolean" default="false">
+  Marks the field as required
+</ParamField>
+
+<ParamField path="locked" type="boolean" default="false">
+  Makes all input fields read-only
+</ParamField>
+
+<ParamField path="isAlphaNumeric" type="boolean" default="false">
+  Allows letters and numbers. Default is numbers only
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface TotpContent extends InputContent {
+  value: string;
+}
+
+interface TotpInputProps {
+  content: TotpContent;
+  setContent: React.Dispatch<React.SetStateAction<TotpContent>>;
+  label?: string;
+  size?: number;
+  locked?: boolean;
+  required?: boolean;
+  totpSize?: number;
+  className?: string;
+  isAlphaNumeric?: boolean;
+}
+```
+
+## Behavior
+
+### Automatic Focus Management
+- First field is automatically focused on mount
+- After entering a digit, focus moves to the next field
+- Backspace on an empty field moves focus to the previous field
+
+### Paste Support
+- Paste a full code and it will distribute across fields
+- Automatically moves focus to the appropriate field after paste
+- Excess characters are ignored
+
+### Input Filtering
+- By default, only numeric input is accepted
+- Set `isAlphaNumeric={true}` to allow letters and numbers
+- Invalid characters are automatically filtered out
+
+## Common Use Cases
+
+- **6-digit OTP**: Email/SMS verification codes
+- **4-digit PIN**: Security PINs, short codes
+- **8-digit codes**: Longer activation codes
+- **Alphanumeric**: License keys, redemption codes
+
+<Tip>
+  The component automatically sets `inputMode="numeric"` for numeric codes and `inputMode="text"` for alphanumeric codes, providing the best keyboard experience on mobile devices.
+</Tip>
+
+<Note>
+  The value is stored as a single string in `content.value`. For example, entering "1", "2", "3", "4", "5", "6" results in `value: "123456"`.
+</Note>

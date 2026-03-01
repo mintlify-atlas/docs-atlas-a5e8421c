@@ -1,0 +1,199 @@
+---
+title: "Checkbox"
+description: "Checkbox component for boolean and multi-value selections"
+---
+
+## Overview
+
+The Checkbox component provides a flexible checkbox input that can handle boolean values or specific string/number values.
+
+## Import
+
+```jsx
+import { Checkbox } from '@jeremiemeunier/form';
+```
+
+## Basic Usage (Boolean)
+
+```jsx
+import { Checkbox } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [agreeContent, setAgreeContent] = useState({
+    error: false,
+    message: '',
+    value: false
+  });
+
+  return (
+    <Checkbox
+      content={agreeContent}
+      setContent={setAgreeContent}
+    >
+      I agree to the terms and conditions
+    </Checkbox>
+  );
+}
+```
+
+## With Value
+
+```jsx
+const [newsletterContent, setNewsletterContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+return (
+  <Checkbox
+    content={newsletterContent}
+    setContent={setNewsletterContent}
+    value="subscribed"
+  >
+    Subscribe to newsletter
+  </Checkbox>
+);
+```
+
+## Multiple Checkboxes (Group)
+
+```jsx
+const [interestsContent, setInterestsContent] = useState({
+  error: false,
+  message: '',
+  value: []
+});
+
+const handleCheckboxChange = (interest) => {
+  setInterestsContent(prev => {
+    const currentValues = Array.isArray(prev.value) ? prev.value : [];
+    const isChecked = currentValues.includes(interest);
+    
+    return {
+      ...prev,
+      value: isChecked
+        ? currentValues.filter(v => v !== interest)
+        : [...currentValues, interest]
+    };
+  });
+};
+
+return (
+  <div>
+    <label>Select your interests:</label>
+    <Checkbox
+      content={{ ...interestsContent, value: interestsContent.value.includes('tech') }}
+      setContent={() => handleCheckboxChange('tech')}
+      value="tech"
+    >
+      Technology
+    </Checkbox>
+    <Checkbox
+      content={{ ...interestsContent, value: interestsContent.value.includes('sports') }}
+      setContent={() => handleCheckboxChange('sports')}
+      value="sports"
+    >
+      Sports
+    </Checkbox>
+    <Checkbox
+      content={{ ...interestsContent, value: interestsContent.value.includes('music') }}
+      setContent={() => handleCheckboxChange('music')}
+      value="music"
+    >
+      Music
+    </Checkbox>
+  </div>
+);
+```
+
+## Without Visual Checkbox
+
+```jsx
+<Checkbox
+  content={acceptContent}
+  setContent={setAcceptContent}
+  noCheckbox={true}
+>
+  Hidden checkbox for custom styling
+</Checkbox>
+```
+
+## Raw Value Mode
+
+```jsx
+const [isEnabled, setIsEnabled] = useState(false);
+
+return (
+  <Checkbox
+    content={isEnabled}
+    setContent={setIsEnabled}
+    rawValue={true}
+  >
+    Enable notifications
+  </Checkbox>
+);
+```
+
+## Props
+
+<ParamField path="content" type="CheckboxContent" required>
+  State object containing `error`, `message`, and `value` (string | number | boolean) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<CheckboxContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Label text or content for the checkbox
+</ParamField>
+
+<ParamField path="value" type="string | number">
+  Specific value for the checkbox (instead of boolean)
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the checkbox
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+<ParamField path="noCheckbox" type="boolean" default="false">
+  Hides the checkbox visual (useful for custom styling)
+</ParamField>
+
+<ParamField path="rawValue" type="boolean" default="false">
+  When true, uses the raw value/checked state directly without the content object wrapper
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface CheckboxContent extends InputContent {
+  value: string | number | boolean;
+}
+
+interface CheckboxProps {
+  children: React.ReactNode;
+  content: CheckboxContent;
+  setContent: React.Dispatch<React.SetStateAction<CheckboxContent> | any>;
+  value?: string | number;
+  disabled?: boolean;
+  className?: string;
+  dataIsLoading?: boolean;
+  noCheckbox?: boolean;
+  rawValue?: boolean;
+}
+```
+
+<Note>
+  When using the `value` prop, the checkbox will store that value in `content.value` when checked. Without the `value` prop, it stores a boolean.
+</Note>

@@ -1,0 +1,207 @@
+---
+title: 'Loader'
+description: 'A simple animated loading spinner component'
+icon: 'spinner'
+---
+
+## Overview
+
+The `Loader` component provides a circular animated spinner to indicate loading states in your application. It's a lightweight, customizable component that can be styled to match your design system.
+
+## Installation
+
+First, configure your `.npmrc` file to point to the GitHub registry:
+
+```npmrc
+@jeremiemeunier:registry=https://npm.pkg.github.com
+```
+
+Then install the core package:
+
+```bash
+npm install @jeremiemeunier/core
+```
+
+## Import
+
+```tsx
+import { Loader } from '@jeremiemeunier/core';
+```
+
+## Props
+
+<ParamField path="width" type="number" optional>
+  The width of the loader in pixels. This controls the size of the spinner.
+  
+  **Default:** Component uses internal sizing if not specified
+</ParamField>
+
+<ParamField path="color" type="string" optional>
+  The color of the spinning circle. Accepts any valid CSS color value (hex, rgb, named colors, etc.).
+  
+  **Default:** Inherits from CSS styling if not specified
+</ParamField>
+
+## Usage
+
+<CodeGroup>
+
+```tsx Basic Usage
+import { Loader } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <Loader />
+    </div>
+  );
+}
+```
+
+```tsx Custom Size
+import { Loader } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <Loader width={50} />
+    </div>
+  );
+}
+```
+
+```tsx Custom Color
+import { Loader } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <Loader color="#3B82F6" />
+    </div>
+  );
+}
+```
+
+```tsx Full Customization
+import { Loader } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <Loader width={60} color="rgb(59, 130, 246)" />
+    </div>
+  );
+}
+```
+
+</CodeGroup>
+
+## Examples
+
+### Loading Button
+
+```tsx
+import { Loader } from '@jeremiemeunier/core';
+import { useState } from 'react';
+
+function LoadingButton() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    setIsLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsLoading(false);
+  };
+
+  return (
+    <button onClick={handleClick} disabled={isLoading}>
+      {isLoading ? <Loader width={20} color="white" /> : 'Submit'}
+    </button>
+  );
+}
+```
+
+### Centered Loading State
+
+```tsx
+import { Loader } from '@jeremiemeunier/core';
+
+function LoadingScreen() {
+  return (
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh' 
+    }}>
+      <Loader width={80} color="#6366F1" />
+    </div>
+  );
+}
+```
+
+### Conditional Loading
+
+```tsx
+import { Loader } from '@jeremiemeunier/core';
+import { useEffect, useState } from 'react';
+
+function DataDisplay() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData().then(result => {
+      setData(result);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return <Loader width={40} color="#10B981" />;
+  }
+
+  return <div>{/* Render data */}</div>;
+}
+```
+
+## Implementation Details
+
+The Loader component renders as:
+- A `<span>` element with class `windmillui-loader`
+- An SVG with a circular animation
+- The circle has a radius of 20 units within a 50x50 viewBox (positioned at 25,25)
+
+<Note>
+  The animation is defined in the accompanying SCSS file and is applied automatically when the component is imported.
+</Note>
+
+## Accessibility
+
+Consider adding ARIA attributes when using the Loader in your application:
+
+```tsx
+<div role="status" aria-live="polite">
+  <Loader width={40} />
+  <span className="sr-only">Loading...</span>
+</div>
+```
+
+## TypeScript
+
+The component is fully typed with TypeScript. The prop interface is:
+
+```typescript
+interface LoaderProps {
+  width?: number;
+  color?: string;
+}
+```
+
+## Source
+
+View the source code:
+- Component: `source/core/src/components/loader/Loader.tsx`
+- Types: `source/core/src/components/loader/Loader.types.ts`
+- Styles: `source/core/src/components/loader/Loader.scss`

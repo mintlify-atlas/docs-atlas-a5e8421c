@@ -1,0 +1,355 @@
+---
+title: Theme
+description: Theme management system with color schemes and dark mode
+---
+
+## Overview
+
+The Theme package provides a comprehensive theme management system built on React Context. It enables dynamic theme switching, dark mode support, and provides pre-built UI components for theme selection.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/theme
+```
+
+Add the following to your `.npmrc` file:
+
+```npmrc
+@jeremiemeunier:registry=https://npm.pkg.github.com
+```
+
+## ThemeProvider
+
+### Basic Usage
+
+Wrap your application with `ThemeProvider` to enable theme management:
+
+```tsx
+import { ThemeProvider } from "@jeremiemeunier/theme";
+
+function App() {
+  return (
+    <ThemeProvider availableTheme={["lavand", "tomato", "sunflower"]}>
+      {/* Your application */}
+    </ThemeProvider>
+  );
+}
+```
+
+### Props
+
+<ParamField path="availableTheme" type="ThemeName[]" required>
+  Array of theme names that users can select from. Available themes: `lavand`, `lavand-ultra`, `tomato`, `sunflower`.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Your application components.
+</ParamField>
+
+## Available Themes
+
+The package supports four built-in color themes:
+
+<CardGroup cols={2}>
+  <Card title="lavand" icon="palette">
+    Default lavender theme with purple tones
+  </Card>
+  <Card title="lavand-ultra" icon="palette">
+    Enhanced lavender theme with deeper purple tones
+  </Card>
+  <Card title="tomato" icon="palette">
+    Warm red-orange theme
+  </Card>
+  <Card title="sunflower" icon="palette">
+    Bright yellow theme
+  </Card>
+</CardGroup>
+
+### ThemeName Type
+
+```typescript
+type ThemeName = "lavand" | "lavand-ultra" | "tomato" | "sunflower";
+```
+
+## Theme Context
+
+Access and modify theme state using the theme context:
+
+```tsx
+import { useContext } from "react";
+import { ThemeContext } from "@jeremiemeunier/theme";
+
+function MyComponent() {
+  const { isDark, setIsDark, colorTheme, setColorTheme } = useContext(ThemeContext);
+
+  return (
+    <div>
+      <p>Current theme: {colorTheme}</p>
+      <p>Dark mode: {isDark ? "on" : "off"}</p>
+      <button onClick={() => setIsDark(!isDark)}>
+        Toggle Dark Mode
+      </button>
+      <button onClick={() => setColorTheme("tomato")}>
+        Switch to Tomato
+      </button>
+    </div>
+  );
+}
+```
+
+### Context API
+
+<ResponseField name="isDark" type="boolean">
+  Whether dark mode is currently active.
+</ResponseField>
+
+<ResponseField name="setIsDark" type="React.Dispatch<React.SetStateAction<boolean>>">
+  Function to toggle dark mode on/off.
+</ResponseField>
+
+<ResponseField name="colorTheme" type="ThemeName">
+  The currently active color theme.
+</ResponseField>
+
+<ResponseField name="setColorTheme" type="React.Dispatch<React.SetStateAction<ThemeName>>">
+  Function to change the active color theme.
+</ResponseField>
+
+## Components
+
+### ThemeSwitch
+
+Toggle between light and dark modes:
+
+```tsx
+import { ThemeSwitch } from "@jeremiemeunier/theme";
+
+function Header() {
+  return (
+    <header>
+      <ThemeSwitch />
+    </header>
+  );
+}
+```
+
+The `ThemeSwitch` component provides a UI control for toggling dark mode. It automatically syncs with the theme context.
+
+### ThemeSelector
+
+Select from available color themes:
+
+```tsx
+import { ThemeSelector } from "@jeremiemeunier/theme";
+
+function Settings() {
+  return (
+    <div>
+      <h2>Choose Your Theme</h2>
+      <ThemeSelector />
+    </div>
+  );
+}
+```
+
+The `ThemeSelector` component displays options for all themes specified in the `ThemeProvider`'s `availableTheme` prop.
+
+## Examples
+
+### Complete Setup
+
+```tsx
+import { ThemeProvider, ThemeSwitch, ThemeSelector } from "@jeremiemeunier/theme";
+
+function App() {
+  return (
+    <ThemeProvider availableTheme={["lavand", "tomato", "sunflower"]}>
+      <Header />
+      <Main />
+    </ThemeProvider>
+  );
+}
+
+function Header() {
+  return (
+    <header>
+      <nav>
+        <h1>My App</h1>
+        <ThemeSwitch />
+      </nav>
+    </header>
+  );
+}
+
+function Main() {
+  return (
+    <main>
+      <h2>Settings</h2>
+      <ThemeSelector />
+    </main>
+  );
+}
+```
+
+### Custom Theme Controls
+
+```tsx
+import { useContext } from "react";
+import { ThemeProvider, ThemeContext } from "@jeremiemeunier/theme";
+
+function CustomThemeControls() {
+  const { isDark, setIsDark, colorTheme, setColorTheme } = useContext(ThemeContext);
+
+  const themes = ["lavand", "lavand-ultra", "tomato", "sunflower"] as const;
+
+  return (
+    <div className="theme-controls">
+      <div className="dark-mode-toggle">
+        <label>
+          <input
+            type="checkbox"
+            checked={isDark}
+            onChange={(e) => setIsDark(e.target.checked)}
+          />
+          Dark Mode
+        </label>
+      </div>
+
+      <div className="color-themes">
+        <h3>Color Theme</h3>
+        {themes.map((theme) => (
+          <button
+            key={theme}
+            onClick={() => setColorTheme(theme)}
+            className={colorTheme === theme ? "active" : ""}
+          >
+            {theme}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider availableTheme={["lavand", "lavand-ultra", "tomato", "sunflower"]}>
+      <CustomThemeControls />
+    </ThemeProvider>
+  );
+}
+```
+
+### Persisting Theme Preferences
+
+```tsx
+import { useState, useEffect, useContext } from "react";
+import { ThemeProvider, ThemeContext } from "@jeremiemeunier/theme";
+
+function ThemePersistence() {
+  const { isDark, setIsDark, colorTheme, setColorTheme } = useContext(ThemeContext);
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("colorTheme");
+    const savedDarkMode = localStorage.getItem("isDark");
+
+    if (savedTheme) {
+      setColorTheme(savedTheme as any);
+    }
+    if (savedDarkMode !== null) {
+      setIsDark(savedDarkMode === "true");
+    }
+  }, []);
+
+  // Save theme to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("colorTheme", colorTheme);
+    localStorage.setItem("isDark", String(isDark));
+  }, [colorTheme, isDark]);
+
+  return null;
+}
+
+function App() {
+  return (
+    <ThemeProvider availableTheme={["lavand", "tomato", "sunflower"]}>
+      <ThemePersistence />
+      {/* Your app */}
+    </ThemeProvider>
+  );
+}
+```
+
+### Subset of Themes
+
+```tsx
+import { ThemeProvider, ThemeSelector } from "@jeremiemeunier/theme";
+
+// Only offer lavand themes
+function App() {
+  return (
+    <ThemeProvider availableTheme={["lavand", "lavand-ultra"]}>
+      <Settings />
+    </ThemeProvider>
+  );
+}
+
+function Settings() {
+  return (
+    <div>
+      <h2>Choose Lavender Variant</h2>
+      <ThemeSelector />
+    </div>
+  );
+}
+```
+
+### Programmatic Theme Changes
+
+```tsx
+import { useContext, useEffect } from "react";
+import { ThemeProvider, ThemeContext } from "@jeremiemeunier/theme";
+
+function AutoTheme() {
+  const { setIsDark } = useContext(ThemeContext);
+
+  useEffect(() => {
+    // Auto-enable dark mode based on time
+    const hour = new Date().getHours();
+    const isDarkTime = hour < 6 || hour >= 18;
+    setIsDark(isDarkTime);
+  }, []);
+
+  return null;
+}
+
+function SeasonalTheme() {
+  const { setColorTheme } = useContext(ThemeContext);
+
+  useEffect(() => {
+    // Change theme based on season
+    const month = new Date().getMonth();
+    if (month >= 2 && month <= 4) {
+      setColorTheme("sunflower"); // Spring
+    } else if (month >= 5 && month <= 8) {
+      setColorTheme("tomato"); // Summer
+    } else {
+      setColorTheme("lavand"); // Fall/Winter
+    }
+  }, []);
+
+  return null;
+}
+
+function App() {
+  return (
+    <ThemeProvider availableTheme={["lavand", "tomato", "sunflower"]}>
+      <AutoTheme />
+      <SeasonalTheme />
+      {/* Your app */}
+    </ThemeProvider>
+  );
+}
+```

@@ -1,0 +1,219 @@
+---
+title: "Input"
+description: "Text input component with validation, character counting, and type support"
+---
+
+## Overview
+
+The Input component provides a flexible text input with built-in validation, character counting, and support for various HTML input types.
+
+## Import
+
+```jsx
+import { Input } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { Input } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [nameContent, setNameContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  return (
+    <Input
+      label="Full Name"
+      content={nameContent}
+      setContent={setNameContent}
+      placeHolder="Enter your full name"
+      required
+    />
+  );
+}
+```
+
+## With Validation
+
+```jsx
+const [emailContent, setEmailContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+const validateEmail = () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(emailContent.value)) {
+    setEmailContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Please enter a valid email address'
+    }));
+  }
+};
+
+return (
+  <Input
+    label="Email"
+    content={emailContent}
+    setContent={setEmailContent}
+    type="email"
+    required
+  />
+);
+```
+
+## Character Limit
+
+```jsx
+<Input
+  label="Bio"
+  content={bioContent}
+  setContent={setBioContent}
+  maxLength={200}
+  placeHolder="Tell us about yourself"
+/>
+```
+
+## Regex Validation
+
+```jsx
+<Input
+  label="Username"
+  content={usernameContent}
+  setContent={setUsernameContent}
+  regex={/[^a-zA-Z0-9_-]/}
+  regexLabel="spaces and special characters"
+  placeHolder="alphanumeric-only_123"
+/>
+```
+
+## Props
+
+<ParamField path="content" type="InputContent" required>
+  State object containing `error`, `message`, and `value` properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<InputContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the input
+</ParamField>
+
+<ParamField path="type" type="HTMLInputTypeAttribute" default="text">
+  HTML input type (text, email, number, tel, url, etc.)
+</ParamField>
+
+<ParamField path="placeHolder" type="string">
+  Placeholder text shown when input is empty
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the input field in grid units
+</ParamField>
+
+<ParamField path="required" type="boolean" default="false">
+  Marks the field as required
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the input field
+</ParamField>
+
+<ParamField path="readOnly" type="boolean" default="false">
+  Makes the input read-only
+</ParamField>
+
+<ParamField path="maxLength" type="number">
+  Maximum character count. Shows a character counter when set
+</ParamField>
+
+<ParamField path="regex" type="RegExp">
+  Regular expression to validate against (shows error for matches)
+</ParamField>
+
+<ParamField path="regexLabel" type="string">
+  Label describing the characters matched by the regex pattern
+</ParamField>
+
+<ParamField path="autofocus" type="boolean" default="false">
+  Automatically focuses the input on mount
+</ParamField>
+
+<ParamField path="autoComplete" type="HTMLInputAutoCompleteAttribute">
+  HTML autocomplete attribute (e.g., "email", "name", "tel")
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name attribute for the input field
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="tagline" type="React.ReactNode">
+  Helper text displayed below the label
+</ParamField>
+
+<ParamField path="min" type="number">
+  Minimum value (for number type)
+</ParamField>
+
+<ParamField path="max" type="number">
+  Maximum value (for number type)
+</ParamField>
+
+<ParamField path="step" type="number">
+  Step value (for number type)
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface InputContent {
+  error: boolean;
+  message: string;
+  value: any | null;
+}
+
+interface InputProps {
+  content: InputContent;
+  setContent: React.Dispatch<React.SetStateAction<InputContent>>;
+  label?: string;
+  size?: number;
+  readOnly?: boolean;
+  tagline?: React.ReactNode;
+  type?: HTMLInputTypeAttribute;
+  maxLength?: number;
+  placeHolder?: string;
+  disabled?: boolean;
+  regex?: RegExp;
+  regexLabel?: string;
+  required?: boolean;
+  name?: string;
+  autofocus?: boolean;
+  autoComplete?: HTMLInputAutoCompleteAttribute;
+  className?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  dataIsLoading?: boolean;
+}
+```
+
+<Note>
+  The `regex` prop validates **against** matches. If the regex matches the input, an error is shown. This is useful for preventing unwanted characters.
+</Note>

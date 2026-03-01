@@ -1,0 +1,211 @@
+---
+title: "Progress"
+description: "Progress bar component for visualizing completion status"
+---
+
+## Overview
+
+The Progress component displays a visual progress bar to show completion percentage or status.
+
+## Import
+
+```jsx
+import { Progress } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { Progress } from '@jeremiemeunier/form';
+
+function MyComponent() {
+  return (
+    <Progress
+      value={65}
+      max={100}
+    />
+  );
+}
+```
+
+## File Upload Progress
+
+```jsx
+import { Progress } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function FileUpload() {
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const handleUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const xhr = new XMLHttpRequest();
+    
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        setUploadProgress(e.loaded);
+      }
+    });
+
+    xhr.open('POST', '/api/upload');
+    xhr.send(formData);
+  };
+
+  return (
+    <div>
+      <h3>Upload Progress</h3>
+      <Progress value={uploadProgress} max={100} />
+      <p>{uploadProgress}%</p>
+    </div>
+  );
+}
+```
+
+## Form Completion
+
+```jsx
+const [formData, setFormData] = useState({
+  name: '',
+  email: '',
+  phone: '',
+  address: ''
+});
+
+const calculateCompletion = () => {
+  const fields = Object.values(formData);
+  const completed = fields.filter(field => field.trim() !== '').length;
+  return completed;
+};
+
+return (
+  <div>
+    <h3>Form Completion</h3>
+    <Progress value={calculateCompletion()} max={4} />
+    <p>{calculateCompletion()} of 4 fields completed</p>
+    {/* Form fields */}
+  </div>
+);
+```
+
+## Loading State
+
+```jsx
+const [isLoading, setIsLoading] = useState(false);
+const [progress, setProgress] = useState(0);
+
+const simulateLoading = () => {
+  setIsLoading(true);
+  setProgress(0);
+  
+  const interval = setInterval(() => {
+    setProgress(prev => {
+      if (prev >= 100) {
+        clearInterval(interval);
+        setIsLoading(false);
+        return 100;
+      }
+      return prev + 10;
+    });
+  }, 200);
+};
+
+return (
+  <div>
+    {isLoading && (
+      <>
+        <Progress value={progress} max={100} />
+        <p>Loading... {progress}%</p>
+      </>
+    )}
+    <button onClick={simulateLoading}>Start</button>
+  </div>
+);
+```
+
+## Task Progress
+
+```jsx
+const [completedTasks, setCompletedTasks] = useState(0);
+const totalTasks = 10;
+
+const completeTask = () => {
+  setCompletedTasks(prev => Math.min(prev + 1, totalTasks));
+};
+
+return (
+  <div>
+    <h3>Task Progress</h3>
+    <Progress value={completedTasks} max={totalTasks} />
+    <p>{completedTasks} of {totalTasks} tasks completed</p>
+    <button onClick={completeTask} disabled={completedTasks >= totalTasks}>
+      Complete Task
+    </button>
+  </div>
+);
+```
+
+## Points or Score
+
+```jsx
+const [score, setScore] = useState(750);
+const maxScore = 1000;
+
+return (
+  <div>
+    <h3>Your Score</h3>
+    <Progress value={score} max={maxScore} />
+    <p>{score} / {maxScore} points</p>
+  </div>
+);
+```
+
+## Props
+
+<ParamField path="value" type="number" required>
+  Current progress value
+</ParamField>
+
+<ParamField path="max" type="number" required>
+  Maximum value (represents 100% progress)
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface ProgressProps {
+  max: number;
+  value: number;
+}
+```
+
+## Styling
+
+The progress bar width is calculated as a percentage:
+```
+width = (value / max) * 100%
+```
+
+For example:
+- `value={50}` and `max={100}` = 50% width
+- `value={3}` and `max={5}` = 60% width
+- `value={750}` and `max={1000}` = 75% width
+
+## Use Cases
+
+- **File uploads**: Show upload progress
+- **Form completion**: Display how many fields are filled
+- **Loading states**: Indicate loading progress
+- **Task completion**: Track completed tasks
+- **Skill levels**: Show proficiency levels
+- **Storage usage**: Display used vs. available space
+- **Goals**: Track progress toward a goal
+
+<Tip>
+  Always display the numeric progress alongside the progress bar for accessibility. For example: "3 of 5 tasks completed" or "65%".
+</Tip>
+
+<Note>
+  The Progress component is purely presentational. You need to manage the `value` state in your component and update it based on your application logic.
+</Note>

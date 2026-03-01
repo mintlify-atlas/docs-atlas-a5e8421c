@@ -1,0 +1,219 @@
+---
+title: "Radio"
+description: "Radio button group component for single-choice selections"
+---
+
+## Overview
+
+The Radio component provides a group of radio buttons with flexible layout options and customizable styling.
+
+## Import
+
+```jsx
+import { Radio } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { Radio } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [planContent, setPlanContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  const planOptions = [
+    { id: 'free', label: 'Free' },
+    { id: 'pro', label: 'Pro' },
+    { id: 'enterprise', label: 'Enterprise' }
+  ];
+
+  return (
+    <Radio
+      label="Select Plan"
+      gridSize={3}
+      values={planOptions}
+      content={planContent}
+      setContent={setPlanContent}
+    />
+  );
+}
+```
+
+## With Validation
+
+```jsx
+const [paymentContent, setPaymentContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+const handleSubmit = () => {
+  if (!paymentContent.value) {
+    setPaymentContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Please select a payment method'
+    }));
+    return;
+  }
+  // Process form
+};
+
+const paymentMethods = [
+  { id: 'credit', label: 'Credit Card' },
+  { id: 'debit', label: 'Debit Card' },
+  { id: 'paypal', label: 'PayPal' }
+];
+
+return (
+  <>
+    <Radio
+      label="Payment Method"
+      gridSize={3}
+      values={paymentMethods}
+      content={paymentContent}
+      setContent={setPaymentContent}
+    />
+    <button onClick={handleSubmit}>Continue</button>
+  </>
+);
+```
+
+## Disabled Options
+
+```jsx
+const shippingOptions = [
+  { id: 'standard', label: 'Standard (3-5 days)' },
+  { id: 'express', label: 'Express (1-2 days)', disabled: true },
+  { id: 'overnight', label: 'Overnight', disabled: true }
+];
+
+return (
+  <Radio
+    label="Shipping Method"
+    gridSize={3}
+    values={shippingOptions}
+    content={shippingContent}
+    setContent={setShippingContent}
+  />
+);
+```
+
+## Custom Grid Layout
+
+```jsx
+const sizeOptions = [
+  { id: 'xs', label: 'XS' },
+  { id: 's', label: 'S' },
+  { id: 'm', label: 'M' },
+  { id: 'l', label: 'L' },
+  { id: 'xl', label: 'XL' },
+  { id: 'xxl', label: 'XXL' }
+];
+
+return (
+  <Radio
+    label="Size"
+    gridSize={6}
+    values={sizeOptions}
+    content={sizeContent}
+    setContent={setSizeContent}
+  />
+);
+```
+
+## Without Visual Radio
+
+```jsx
+const colorOptions = [
+  { id: 'red', label: 'Red', classname: 'color-red' },
+  { id: 'blue', label: 'Blue', classname: 'color-blue' },
+  { id: 'green', label: 'Green', classname: 'color-green' }
+];
+
+return (
+  <Radio
+    label="Color"
+    gridSize={3}
+    values={colorOptions}
+    content={colorContent}
+    setContent={setColorContent}
+    viewBox={false}
+  />
+);
+```
+
+## Props
+
+<ParamField path="values" type="RadioValues[]" required>
+  Array of radio button options
+</ParamField>
+
+<ParamField path="content" type="RadioContent" required>
+  State object containing `error`, `message`, and `value` (string | number) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<RadioContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="gridSize" type="number" required>
+  Number of columns in the grid layout
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the radio group
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the radio group in grid units
+</ParamField>
+
+<ParamField path="viewBox" type="boolean" default="true">
+  Whether to show the radio button visual. Set to false for custom styling
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables all radio buttons in the group
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface RadioContent extends InputContent {
+  value: string | number;
+}
+
+interface RadioValues {
+  id: string | undefined;
+  label: string;
+  disabled?: boolean;
+  classname?: string;
+}
+
+interface RadioProps {
+  gridSize: number;
+  values: RadioValues[];
+  content: RadioContent;
+  setContent: React.Dispatch<React.SetStateAction<RadioContent>>;
+  viewBox?: boolean;
+  label?: string;
+  size?: number;
+  className?: string;
+  disabled?: boolean;
+}
+```
+
+<Tip>
+  Use `gridSize` to control the layout. For example, `gridSize={3}` creates 3 columns, perfect for 3 or 6 options.
+</Tip>

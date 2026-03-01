@@ -1,0 +1,226 @@
+---
+title: Installation
+description: Set up Windmill Components in your React project
+---
+
+## Prerequisites
+
+Before installing Windmill Components, ensure you have:
+
+- Node.js 16.x or higher
+- npm, yarn, or pnpm package manager
+- A React project (React 18+ recommended)
+
+## Configure GitHub Packages Registry
+
+All Windmill Components packages are published to GitHub Packages. You need to configure npm to use the GitHub registry for the `@jeremiemeunier` scope.
+
+<Steps>
+  <Step title="Create .npmrc file">
+    Create a `.npmrc` file in the root of your project (next to your `package.json`):
+
+    ```bash
+    touch .npmrc
+    ```
+  </Step>
+
+  <Step title="Add registry configuration">
+    Add the following line to your `.npmrc` file:
+
+    ```npmrc .npmrc
+    @jeremiemeunier:registry=https://npm.pkg.github.com
+    ```
+
+    This tells npm to fetch all `@jeremiemeunier` scoped packages from GitHub Packages.
+  </Step>
+
+  <Step title="Authenticate (if required)">
+    If the packages require authentication, you'll need to login to the GitHub registry:
+
+    ```bash
+    npm login --registry=https://npm.pkg.github.com
+    ```
+
+    <Note>
+      You may need a GitHub Personal Access Token (PAT) with `read:packages` permission. Create one at [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens).
+    </Note>
+  </Step>
+</Steps>
+
+## Install Packages
+
+Once your `.npmrc` is configured, you can install the packages you need.
+
+### Install Individual Packages
+
+<CodeGroup>
+```bash npm
+npm install @jeremiemeunier/core @jeremiemeunier/form
+```
+
+```bash yarn
+yarn add @jeremiemeunier/core @jeremiemeunier/form
+```
+
+```bash pnpm
+pnpm add @jeremiemeunier/core @jeremiemeunier/form
+```
+</CodeGroup>
+
+### Common Package Combinations
+
+Depending on your needs, here are some common package combinations:
+
+#### Form Components
+
+<CodeGroup>
+```bash npm
+npm install @jeremiemeunier/core @jeremiemeunier/form
+```
+
+```bash yarn
+yarn add @jeremiemeunier/core @jeremiemeunier/form
+```
+
+```bash pnpm
+pnpm add @jeremiemeunier/core @jeremiemeunier/form
+```
+</CodeGroup>
+
+<Note>
+  The `@jeremiemeunier/form` package depends on `@jeremiemeunier/core`, so you'll need to install both.
+</Note>
+
+#### UI Components
+
+<CodeGroup>
+```bash npm
+npm install @jeremiemeunier/modal @jeremiemeunier/carousel @jeremiemeunier/drawer
+```
+
+```bash yarn
+yarn add @jeremiemeunier/modal @jeremiemeunier/carousel @jeremiemeunier/drawer
+```
+
+```bash pnpm
+pnpm add @jeremiemeunier/modal @jeremiemeunier/carousel @jeremiemeunier/drawer
+```
+</CodeGroup>
+
+#### Hooks and Utilities
+
+<CodeGroup>
+```bash npm
+npm install @jeremiemeunier/hooks @jeremiemeunier/toast @jeremiemeunier/theme
+```
+
+```bash yarn
+yarn add @jeremiemeunier/hooks @jeremiemeunier/toast @jeremiemeunier/theme
+```
+
+```bash pnpm
+pnpm add @jeremiemeunier/hooks @jeremiemeunier/toast @jeremiemeunier/theme
+```
+</CodeGroup>
+
+#### Complete Installation
+
+To install all available packages:
+
+<CodeGroup>
+```bash npm
+npm install @jeremiemeunier/core @jeremiemeunier/carousel @jeremiemeunier/cursor @jeremiemeunier/drawer @jeremiemeunier/editorparser @jeremiemeunier/form @jeremiemeunier/xform @jeremiemeunier/hooks @jeremiemeunier/modal @jeremiemeunier/navigation @jeremiemeunier/theme @jeremiemeunier/toast @jeremiemeunier/popover
+```
+
+```bash yarn
+yarn add @jeremiemeunier/core @jeremiemeunier/carousel @jeremiemeunier/cursor @jeremiemeunier/drawer @jeremiemeunier/editorparser @jeremiemeunier/form @jeremiemeunier/xform @jeremiemeunier/hooks @jeremiemeunier/modal @jeremiemeunier/navigation @jeremiemeunier/theme @jeremiemeunier/toast @jeremiemeunier/popover
+```
+
+```bash pnpm
+pnpm add @jeremiemeunier/core @jeremiemeunier/carousel @jeremiemeunier/cursor @jeremiemeunier/drawer @jeremiemeunier/editorparser @jeremiemeunier/form @jeremiemeunier/xform @jeremiemeunier/hooks @jeremiemeunier/modal @jeremiemeunier/navigation @jeremiemeunier/theme @jeremiemeunier/toast @jeremiemeunier/popover
+```
+</CodeGroup>
+
+## Verify Installation
+
+After installation, verify that the packages are installed correctly:
+
+```bash
+npm list @jeremiemeunier/core
+```
+
+You should see output similar to:
+
+```
+your-project@1.0.0
+└── @jeremiemeunier/core@1.4.7
+```
+
+## Import Components
+
+Once installed, you can import components in your React application:
+
+```tsx
+import { Input, Select, Submit } from "@jeremiemeunier/form";
+import { Modal } from "@jeremiemeunier/modal";
+import { useToasts } from "@jeremiemeunier/toast";
+import { Carousel } from "@jeremiemeunier/carousel";
+```
+
+## TypeScript Support
+
+All packages include TypeScript definitions out of the box. No additional `@types` packages are needed.
+
+```tsx
+import type { InputProps } from "@jeremiemeunier/form";
+
+const MyInput: React.FC = () => {
+  const [value, setValue] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
+  return (
+    <Input
+      label="Username"
+      content={value}
+      setContent={setValue}
+      error={error}
+      required
+    />
+  );
+};
+```
+
+## Troubleshooting
+
+### Authentication Errors
+
+If you encounter authentication errors:
+
+1. Verify your GitHub Personal Access Token has the `read:packages` scope
+2. Ensure you're logged in to the GitHub registry:
+   ```bash
+   npm login --registry=https://npm.pkg.github.com
+   ```
+3. Check that your `.npmrc` file is in the correct location (project root)
+
+### Package Not Found
+
+If you get a "404 Not Found" error:
+
+1. Double-check the package name spelling
+2. Verify the `.npmrc` configuration is correct
+3. Ensure the package exists in the GitHub registry
+
+### Version Conflicts
+
+If you experience peer dependency warnings:
+
+1. Ensure your React version is 18.x or higher (19.x recommended)
+2. Check that all `@jeremiemeunier` packages are on compatible versions
+3. Use `npm list` to inspect your dependency tree
+
+## Next Steps
+
+<Card title="Quick Start" icon="rocket" href="/quickstart">
+  Follow our quick start guide to build your first component
+</Card>

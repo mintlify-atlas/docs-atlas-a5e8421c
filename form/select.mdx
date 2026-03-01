@@ -1,0 +1,165 @@
+---
+title: "Select"
+description: "Dropdown selection component with error handling"
+---
+
+## Overview
+
+The Select component provides a styled dropdown menu for selecting from a list of options.
+
+## Import
+
+```jsx
+import { Select } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { Select } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [countryContent, setCountryContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  return (
+    <Select
+      label="Country"
+      content={countryContent}
+      setContent={setCountryContent}
+    >
+      <option value="">Select a country</option>
+      <option value="us">United States</option>
+      <option value="uk">United Kingdom</option>
+      <option value="ca">Canada</option>
+      <option value="fr">France</option>
+    </Select>
+  );
+}
+```
+
+## With Validation
+
+```jsx
+const [roleContent, setRoleContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+const handleSubmit = () => {
+  if (!roleContent.value) {
+    setRoleContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Please select a role'
+    }));
+    return;
+  }
+  // Process form
+};
+
+return (
+  <>
+    <Select
+      label="User Role"
+      content={roleContent}
+      setContent={setRoleContent}
+    >
+      <option value="">Select a role</option>
+      <option value="admin">Administrator</option>
+      <option value="editor">Editor</option>
+      <option value="viewer">Viewer</option>
+    </Select>
+    <button onClick={handleSubmit}>Submit</button>
+  </>
+);
+```
+
+## Grouped Options
+
+```jsx
+<Select
+  label="Product"
+  content={productContent}
+  setContent={setProductContent}
+>
+  <option value="">Select a product</option>
+  <optgroup label="Electronics">
+    <option value="laptop">Laptop</option>
+    <option value="phone">Phone</option>
+    <option value="tablet">Tablet</option>
+  </optgroup>
+  <optgroup label="Accessories">
+    <option value="case">Case</option>
+    <option value="charger">Charger</option>
+    <option value="cable">Cable</option>
+  </optgroup>
+</Select>
+```
+
+## Props
+
+<ParamField path="content" type="SelectContent" required>
+  State object containing `error`, `message`, and `value` (string) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<SelectContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Option elements to display in the dropdown
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the select
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the select field in grid units
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the select field
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name attribute for the select field
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface SelectContent extends InputContent {
+  value: string;
+}
+
+interface SelectProps {
+  content: SelectContent;
+  setContent: React.Dispatch<React.SetStateAction<SelectContent>>;
+  children: React.ReactNode;
+  label?: string;
+  size?: number;
+  disabled?: boolean;
+  className?: string;
+  name?: string;
+  dataIsLoading?: boolean;
+}
+```
+
+<Tip>
+  Always include a default empty option (e.g., "Select an option") to ensure users make an explicit choice.
+</Tip>

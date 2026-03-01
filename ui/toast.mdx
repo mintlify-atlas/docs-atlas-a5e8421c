@@ -1,0 +1,381 @@
+---
+title: Toast
+description: A notification toast system with provider pattern and useToasts hook for displaying messages.
+---
+
+## Overview
+
+The Toast component system provides a flexible way to display notification messages in your React application. It uses a provider pattern to manage toast state globally and offers rich customization options including types, positions, icons, and timing.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/toast
+```
+
+<Note>
+  This package requires `framer-motion` and `@jeremiemeunier/core` as peer dependencies.
+</Note>
+
+## Basic Usage
+
+### 1. Wrap Your App with ToastProvider
+
+```tsx
+import { ToastProvider } from "@jeremiemeunier/toast";
+
+export default function App() {
+  return (
+    <ToastProvider>
+      {/* Your application components */}
+    </ToastProvider>
+  );
+}
+```
+
+### 2. Use the useToasts Hook
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function MyComponent() {
+  const { pushToast } = useToasts();
+
+  const notify = () => {
+    pushToast({
+      content: "Operation successful!",
+      type: "positive",
+      title: "Success",
+    });
+  };
+
+  return <button onClick={notify}>Show Toast</button>;
+}
+```
+
+## ToastProvider
+
+The context provider that manages toast state and rendering.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Your application components.
+</ParamField>
+
+## useToasts Hook
+
+A hook that returns functions to control toasts.
+
+### Return Values
+
+<ResponseField name="pushToast" type="(toast: ToastObject) => ToastObject">
+  Displays a new toast notification and returns the toast object.
+</ResponseField>
+
+<ResponseField name="clearToast" type="(toast: ToastObject) => void">
+  Manually removes a specific toast.
+</ResponseField>
+
+## Toast Options
+
+The `pushToast` function accepts an object with the following properties:
+
+<ParamField path="content" type="string" required>
+  The main message text to display in the toast.
+</ParamField>
+
+<ParamField path="type" type="'positive' | 'negative' | 'neutral' | null" required>
+  The toast type, which determines the color scheme:
+  - `positive`: Success messages (green)
+  - `negative`: Error messages (red)
+  - `neutral`: Informational messages (gray)
+  - `null`: Default styling
+</ParamField>
+
+<ParamField path="title" type="string">
+  Optional title displayed above the content.
+</ParamField>
+
+<ParamField path="icon" type="string | string[]">
+  Icon class name(s) to display. Supports Tabler Icons format (e.g., `"ti ti-check"`).
+</ParamField>
+
+<ParamField path="loading" type="boolean">
+  If true, displays a loading spinner instead of an icon.
+</ParamField>
+
+<ParamField path="position" type="'tl' | 'tr' | 'bl' | 'br' | 'cl' | 'cr' | 'cb' | 'ct'" default="'bl'">
+  Position of the toast on screen:
+  - `tl`: Top left
+  - `tr`: Top right
+  - `bl`: Bottom left
+  - `br`: Bottom right
+  - `cl`: Center left
+  - `cr`: Center right
+  - `cb`: Center bottom
+  - `ct`: Center top
+</ParamField>
+
+<ParamField path="duration" type="number" default="5">
+  How long (in seconds) before the toast auto-hides. Default is 5 seconds.
+</ParamField>
+
+<ParamField path="persistent" type="boolean" default="false">
+  If true, the toast will not auto-hide and must be manually dismissed.
+</ParamField>
+
+<ParamField path="timed" type="number">
+  If provided, displays a countdown timer showing remaining seconds.
+</ParamField>
+
+<ParamField path="format" type="object">
+  Formatting options:
+  - `icon`: Position of icon (`'left' | 'right' | 'both'`)
+  - `countdown`: Whether to show countdown timer (boolean)
+</ParamField>
+
+## Examples
+
+### Success Toast
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function SuccessExample() {
+  const { pushToast } = useToasts();
+
+  const showSuccess = () => {
+    pushToast({
+      content: "Your changes have been saved successfully.",
+      type: "positive",
+      title: "Success",
+      icon: "ti ti-check",
+    });
+  };
+
+  return <button onClick={showSuccess}>Save Changes</button>;
+}
+```
+
+### Error Toast
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function ErrorExample() {
+  const { pushToast } = useToasts();
+
+  const showError = () => {
+    pushToast({
+      content: "Unable to connect to the server. Please try again.",
+      type: "negative",
+      title: "Error",
+      icon: "ti ti-alert-circle",
+      persistent: true, // Won't auto-hide
+    });
+  };
+
+  return <button onClick={showError}>Trigger Error</button>;
+}
+```
+
+### Loading Toast
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function LoadingExample() {
+  const { pushToast, clearToast } = useToasts();
+
+  const handleUpload = async () => {
+    const toast = pushToast({
+      content: "Uploading file...",
+      type: "neutral",
+      title: "Please wait",
+      loading: true,
+      persistent: true,
+    });
+
+    try {
+      await uploadFile();
+      clearToast(toast);
+      pushToast({
+        content: "File uploaded successfully!",
+        type: "positive",
+        icon: "ti ti-check",
+      });
+    } catch (error) {
+      clearToast(toast);
+      pushToast({
+        content: "Upload failed.",
+        type: "negative",
+        icon: "ti ti-x",
+      });
+    }
+  };
+
+  return <button onClick={handleUpload}>Upload File</button>;
+}
+```
+
+### Toast with Countdown Timer
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function TimerExample() {
+  const { pushToast } = useToasts();
+
+  const showTimer = () => {
+    pushToast({
+      content: "Your session will expire soon.",
+      type: "neutral",
+      title: "Session Timeout",
+      timed: 120, // 2 minutes countdown
+      persistent: true,
+    });
+  };
+
+  return <button onClick={showTimer}>Start Timer</button>;
+}
+```
+
+### Positioned Toasts
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function PositionExample() {
+  const { pushToast } = useToasts();
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          pushToast({
+            content: "Top right notification",
+            type: "positive",
+            position: "tr",
+          })
+        }
+      >
+        Top Right
+      </button>
+
+      <button
+        onClick={() =>
+          pushToast({
+            content: "Bottom left notification",
+            type: "neutral",
+            position: "bl",
+          })
+        }
+      >
+        Bottom Left
+      </button>
+
+      <button
+        onClick={() =>
+          pushToast({
+            content: "Center notification",
+            type: "positive",
+            position: "ct",
+          })
+        }
+      >
+        Center Top
+      </button>
+    </div>
+  );
+}
+```
+
+### Custom Duration
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function DurationExample() {
+  const { pushToast } = useToasts();
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          pushToast({
+            content: "This will disappear in 2 seconds",
+            type: "neutral",
+            duration: 2,
+          })
+        }
+      >
+        Quick Toast (2s)
+      </button>
+
+      <button
+        onClick={() =>
+          pushToast({
+            content: "This will stay for 10 seconds",
+            type: "positive",
+            duration: 10,
+          })
+        }
+      >
+        Long Toast (10s)
+      </button>
+    </div>
+  );
+}
+```
+
+### Information Toast
+
+```tsx
+import { useToasts } from "@jeremiemeunier/toast";
+
+function InfoExample() {
+  const { pushToast } = useToasts();
+
+  const showInfo = () => {
+    pushToast({
+      content: "New updates are available. Refresh to see them.",
+      type: "neutral",
+      title: "Info",
+      icon: "ti ti-info-circle",
+      duration: 8,
+    });
+  };
+
+  return <button onClick={showInfo}>Show Info</button>;
+}
+```
+
+## Features
+
+- Multiple toast types (positive, negative, neutral)
+- Configurable positioning (8 positions)
+- Auto-hide with configurable duration
+- Persistent toasts that require manual dismissal
+- Loading state with spinner
+- Custom icons support
+- Countdown timer display
+- Click to dismiss
+- Smooth animations via Framer Motion
+- Only shows one toast at a time (newest replaces previous)
+
+## Behavior
+
+- **Auto-dismiss**: By default, toasts automatically hide after 5 seconds
+- **Manual dismiss**: Click on a toast to dismiss it immediately
+- **Toast queue**: When a new toast is pushed, it replaces any existing toast
+- **Persistent mode**: Setting `persistent: true` or `loading: true` disables auto-hide
+- **Timer management**: Each toast manages its own timer, which is cleared on manual dismiss
+
+## Styling
+
+Toasts support different visual styles based on the `type` prop:
+- `positive`: Green color scheme for success messages
+- `negative`: Red color scheme for errors
+- `neutral`: Gray color scheme for information
+- `null`: Default styling
+
+Icons can be displayed using the Tabler Icons class format.

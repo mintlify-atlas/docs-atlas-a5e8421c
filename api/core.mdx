@@ -1,0 +1,75 @@
+---
+title: '@jeremiemeunier/core'
+description: 'Core components for the Windmill UI library'
+icon: 'cube'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/core
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### CircleGauge
+
+A circular gauge component for displaying progress.
+
+**Props:**
+
+```typescript
+interface CircleGaugeTypes {
+  progress: number;
+}
+```
+
+**Usage:**
+
+```tsx
+import { CircleGauge } from '@jeremiemeunier/core';
+
+<CircleGauge progress={75} />
+```
+
+### Loader
+
+A loading spinner component.
+
+**Props:**
+
+```typescript
+interface LoaderProps {
+  width?: number;
+  color?: string;
+}
+```
+
+**Usage:**
+
+```tsx
+import { Loader } from '@jeremiemeunier/core';
+
+<Loader width={40} color="#3b82f6" />
+```
+
+## Dependencies
+
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+All components are exported from the main entry point:
+
+```typescript
+export * from "./components";
+```

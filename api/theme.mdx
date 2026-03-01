@@ -1,0 +1,183 @@
+---
+title: '@jeremiemeunier/theme'
+description: 'Theme management components and context for light/dark mode and color themes'
+icon: 'palette'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/theme
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Overview
+
+This package provides components and context for managing application themes, including dark/light mode switching and color theme selection.
+
+## Type Definitions
+
+```typescript
+type ThemeName = "lavand" | "lavand-ultra" | "tomato" | "sunflower";
+
+interface ThemeProvider {
+  isDark: boolean;
+  setIsDark: React.Dispatch<React.SetStateAction<boolean>>;
+  colorTheme: ThemeName;
+  setColorTheme: React.Dispatch<React.SetStateAction<ThemeName>>;
+}
+
+interface ThemeContext {
+  children: React.ReactNode;
+  availableTheme: ThemeName[];
+}
+```
+
+## Components
+
+### ThemeContext
+
+Context provider for managing theme state across your application.
+
+**Props:**
+
+- `children`: React components to wrap
+- `availableTheme`: Array of available theme names
+
+**Usage:**
+
+```tsx
+import { ThemeContext } from '@jeremiemeunier/theme';
+
+function App() {
+  return (
+    <ThemeContext availableTheme={["lavand", "tomato", "sunflower"]}>
+      <YourApp />
+    </ThemeContext>
+  );
+}
+```
+
+### ThemeSwitch
+
+A component for toggling between light and dark modes.
+
+**Usage:**
+
+```tsx
+import { ThemeSwitch, useTheme } from '@jeremiemeunier/theme';
+
+function Header() {
+  return (
+    <header>
+      <ThemeSwitch />
+    </header>
+  );
+}
+```
+
+### ThemeSelector
+
+A component for selecting between available color themes.
+
+**Usage:**
+
+```tsx
+import { ThemeSelector } from '@jeremiemeunier/theme';
+
+function Settings() {
+  return (
+    <div>
+      <h3>Choose Theme</h3>
+      <ThemeSelector />
+    </div>
+  );
+}
+```
+
+## Available Themes
+
+The package includes four built-in color themes:
+
+- **lavand**: Lavender purple theme
+- **lavand-ultra**: Enhanced lavender theme
+- **tomato**: Red/tomato theme
+- **sunflower**: Yellow/golden theme
+
+## Using the Theme Context
+
+```tsx
+import { useTheme } from '@jeremiemeunier/theme';
+
+function MyComponent() {
+  const { isDark, setIsDark, colorTheme, setColorTheme } = useTheme();
+
+  return (
+    <div>
+      <p>Current theme: {colorTheme}</p>
+      <p>Dark mode: {isDark ? 'On' : 'Off'}</p>
+      
+      <button onClick={() => setIsDark(!isDark)}>
+        Toggle Dark Mode
+      </button>
+      
+      <select
+        value={colorTheme}
+        onChange={(e) => setColorTheme(e.target.value as ThemeName)}
+      >
+        <option value="lavand">Lavand</option>
+        <option value="tomato">Tomato</option>
+        <option value="sunflower">Sunflower</option>
+      </select>
+    </div>
+  );
+}
+```
+
+## Complete Example
+
+```tsx
+import { ThemeContext, ThemeSwitch, ThemeSelector } from '@jeremiemeunier/theme';
+
+function App() {
+  return (
+    <ThemeContext availableTheme={["lavand", "lavand-ultra", "tomato", "sunflower"]}>
+      <div className="app">
+        <header>
+          <h1>My App</h1>
+          <ThemeSwitch />
+        </header>
+        
+        <main>
+          <div className="settings">
+            <h2>Theme Settings</h2>
+            <ThemeSelector />
+          </div>
+          
+          {/* Your app content */}
+        </main>
+      </div>
+    </ThemeContext>
+  );
+}
+```
+
+## Dependencies
+
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+
+## Exports
+
+The package exports components and context from:
+
+```typescript
+export * from "./components";
+export * from "./context";
+```

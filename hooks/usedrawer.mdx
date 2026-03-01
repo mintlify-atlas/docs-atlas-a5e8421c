@@ -1,0 +1,350 @@
+---
+title: useDrawer
+description: A React hook for controlling bottom drawer UI component
+---
+
+## Overview
+
+The `useDrawer` hook provides an API to control a bottom drawer component, allowing you to push content into it and manage its open/closed state. It works in conjunction with the `DrawerProvider` context to create smooth, animated drawer interactions.
+
+## Installation
+
+```bash
+npm install @windmillui/drawer
+```
+
+## Setup
+
+First, wrap your application with the `DrawerProvider`:
+
+```tsx
+import { DrawerProvider } from '@windmillui/drawer';
+
+function App() {
+  return (
+    <DrawerProvider>
+      <YourApp />
+    </DrawerProvider>
+  );
+}
+```
+
+## Usage
+
+```tsx
+import { useDrawer } from '@windmillui/drawer';
+
+function MyComponent() {
+  const { pushContent, openDrawer, closeDrawer } = useDrawer();
+
+  const handleOpenDrawer = () => {
+    pushContent(
+      <div>
+        <h2>Drawer Content</h2>
+        <p>This is the content inside the drawer.</p>
+      </div>
+    );
+    openDrawer();
+  };
+
+  return (
+    <button onClick={handleOpenDrawer}>
+      Open Drawer
+    </button>
+  );
+}
+```
+
+## API Reference
+
+### Return Value
+
+The hook returns an object with the following methods:
+
+#### `pushContent`
+
+```tsx
+pushContent: (element: React.ReactNode) => React.ReactNode
+```
+
+Pushes content into the drawer to be displayed when opened.
+
+**Parameters:**
+- `element`: `React.ReactNode` - The content to display in the drawer
+
+**Returns:**
+- `React.ReactNode` - Returns void (the return type is for compatibility)
+
+**Example:**
+```tsx
+pushContent(<div>My drawer content</div>);
+```
+
+#### `openDrawer`
+
+```tsx
+openDrawer: () => void
+```
+
+Opens the drawer with the currently pushed content.
+
+**Example:**
+```tsx
+openDrawer();
+```
+
+#### `closeDrawer`
+
+```tsx
+closeDrawer: () => void
+```
+
+Closes the drawer.
+
+**Example:**
+```tsx
+closeDrawer();
+```
+
+#### `switchDrawer`
+
+```tsx
+switchDrawer: () => void
+```
+
+Toggles the drawer between open and closed states.
+
+**Example:**
+```tsx
+switchDrawer();
+```
+
+## Examples
+
+### Basic Drawer with Content
+
+```tsx
+import { useDrawer } from '@windmillui/drawer';
+
+function UserProfile() {
+  const { pushContent, openDrawer } = useDrawer();
+
+  const showUserDetails = (user) => {
+    pushContent(
+      <div className="user-details">
+        <h2>{user.name}</h2>
+        <p>Email: {user.email}</p>
+        <p>Phone: {user.phone}</p>
+      </div>
+    );
+    openDrawer();
+  };
+
+  return (
+    <div>
+      <button onClick={() => showUserDetails({
+        name: 'John Doe',
+        email: 'john@example.com',
+        phone: '555-0123'
+      })}>
+        View Profile
+      </button>
+    </div>
+  );
+}
+```
+
+### Drawer with Form
+
+```tsx
+import { useDrawer } from '@windmillui/drawer';
+import { useState } from 'react';
+
+function AddItemButton() {
+  const { pushContent, openDrawer, closeDrawer } = useDrawer();
+  const [itemName, setItemName] = useState('');
+
+  const showAddItemForm = () => {
+    pushContent(
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        // Handle form submission
+        console.log('Adding item:', itemName);
+        closeDrawer();
+      }}>
+        <h2>Add New Item</h2>
+        <input
+          type="text"
+          value={itemName}
+          onChange={(e) => setItemName(e.target.value)}
+          placeholder="Item name"
+        />
+        <button type="submit">Add Item</button>
+        <button type="button" onClick={closeDrawer}>
+          Cancel
+        </button>
+      </form>
+    );
+    openDrawer();
+  };
+
+  return (
+    <button onClick={showAddItemForm}>
+      Add Item
+    </button>
+  );
+}
+```
+
+### Drawer with Dynamic Content
+
+```tsx
+import { useDrawer } from '@windmillui/drawer';
+import { useQuery } from '@tanstack/react-query';
+
+function ProductList() {
+  const { pushContent, openDrawer, closeDrawer } = useDrawer();
+
+  const showProductDetails = (productId: string) => {
+    pushContent(<ProductDetailsDrawer productId={productId} />);
+    openDrawer();
+  };
+
+  return (
+    <div>
+      {products.map(product => (
+        <div key={product.id} onClick={() => showProductDetails(product.id)}>
+          {product.name}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProductDetailsDrawer({ productId }: { productId: string }) {
+  const { closeDrawer } = useDrawer();
+  const { data: product, isLoading } = useQuery(
+    ['product', productId],
+    () => fetchProduct(productId)
+  );
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h2>{product.name}</h2>
+      <img src={product.image} alt={product.name} />
+      <p>{product.description}</p>
+      <p>Price: ${product.price}</p>
+      <button onClick={closeDrawer}>Close</button>
+    </div>
+  );
+}
+```
+
+### Toggle Drawer
+
+```tsx
+import { useDrawer } from '@windmillui/drawer';
+
+function SettingsPanel() {
+  const { pushContent, switchDrawer } = useDrawer();
+
+  // Set up the drawer content once
+  pushContent(
+    <div>
+      <h2>Settings</h2>
+      <label>
+        <input type="checkbox" />
+        Enable notifications
+      </label>
+      <label>
+        <input type="checkbox" />
+        Dark mode
+      </label>
+    </div>
+  );
+
+  return (
+    <button onClick={switchDrawer}>
+      Toggle Settings
+    </button>
+  );
+}
+```
+
+### Drawer with Close on Background Click
+
+```tsx
+import { useDrawer } from '@windmillui/drawer';
+
+function FilterOptions() {
+  const { pushContent, openDrawer, closeDrawer } = useDrawer();
+
+  const showFilters = () => {
+    pushContent(
+      <div>
+        <h2>Filter Products</h2>
+        <div>
+          <h3>Price Range</h3>
+          <input type="range" min="0" max="1000" />
+        </div>
+        <div>
+          <h3>Category</h3>
+          <select>
+            <option>Electronics</option>
+            <option>Clothing</option>
+            <option>Books</option>
+          </select>
+        </div>
+        <button onClick={closeDrawer}>Apply Filters</button>
+      </div>
+    );
+    openDrawer();
+  };
+
+  return (
+    <button onClick={showFilters}>
+      Show Filters
+    </button>
+  );
+}
+```
+
+## Styling
+
+The drawer comes with built-in styles and animations:
+
+- Smooth slide-up animation powered by Framer Motion
+- Semi-transparent background overlay
+- Click outside to close functionality
+- Scrollable content area using SimpleBar
+- Maximum height of 60vh for content
+
+## Notes
+
+- The drawer uses Framer Motion for animations
+- Content is scrollable using SimpleBar when it exceeds the maximum height
+- Clicking the background overlay automatically closes the drawer
+- All drawer control functions are memoized with `useCallback` for optimal performance
+- The drawer appears from the bottom of the screen
+- Only one drawer can be open at a time (new content replaces existing content)
+
+## Provider Props
+
+### `DrawerProvider`
+
+The provider accepts the following props:
+
+```tsx
+interface ContextProps {
+  children: React.ReactNode;
+}
+```
+
+- `children`: Your application components
+
+## Related
+
+- [Framer Motion Documentation](https://www.framer.com/motion/)
+- [SimpleBar Documentation](https://github.com/Grsmto/simplebar)

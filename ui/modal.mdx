@@ -1,0 +1,331 @@
+---
+title: Modal
+description: A flexible React modal library with multiple subcomponents for building complex dialogs and menus.
+---
+
+## Overview
+
+The Modal component provides a comprehensive system for creating modals, dialogs, and side menus. It uses a composition pattern with multiple subcomponents that can be combined to create various modal layouts.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/modal
+```
+
+<Note>
+  This package requires `framer-motion` and `simplebar-react` as peer dependencies.
+</Note>
+
+## Basic Usage
+
+```tsx
+import { Modal } from "@jeremiemeunier/modal";
+import { useState } from "react";
+
+const [visible, setVisible] = useState(false);
+
+<Modal>
+  <Modal.Background setVisibility={setVisible} />
+  <Modal.ModalCenter size="medium">
+    <Modal.Header>Example Modal</Modal.Header>
+    <Modal.Close setVisibility={setVisible} />
+    <Modal.Body>
+      <p>Modal content goes here</p>
+    </Modal.Body>
+  </Modal.ModalCenter>
+</Modal>
+```
+
+## Subcomponents
+
+### Modal
+
+The root modal container.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Modal subcomponents (Background, ModalCenter, MenuLeft, MenuRight, etc.)
+</ParamField>
+
+### Modal.Background
+
+A backdrop that closes the modal when clicked.
+
+<ParamField path="setVisibility" type="(visible: boolean) => void" required>
+  Function to control modal visibility state.
+</ParamField>
+
+<ParamField path="refreshHandler" type="() => void">
+  Optional callback function executed after closing the modal.
+</ParamField>
+
+### Modal.Header
+
+Header section for the modal title.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Header content (typically a title string or heading element).
+</ParamField>
+
+### Modal.Close
+
+Close button with an X icon.
+
+<ParamField path="setVisibility" type="(visible: boolean) => void" required>
+  Function to control modal visibility state.
+</ParamField>
+
+<ParamField path="refreshHandler" type="() => void">
+  Optional callback function executed after closing the modal.
+</ParamField>
+
+### Modal.Body
+
+Main content area of the modal.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Modal body content.
+</ParamField>
+
+### Modal.ModalCenter
+
+Centered modal container with animations.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Modal content.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'fullscreen' | 'sl' | 'sm' | 'sf'">
+  Size variant for the modal.
+</ParamField>
+
+<ParamField path="template" type="'menu' | undefined">
+  Template variant (affects max height calculation).
+</ParamField>
+
+<ParamField path="direction" type="'top' | 'bottom'" default="'top'">
+  Animation direction for modal entrance/exit.
+</ParamField>
+
+<ParamField path="maxHeight" type="string" default="'90vh'">
+  Maximum height for the scrollable content area.
+</ParamField>
+
+### Modal.MenuLeft
+
+Left-aligned slide-in menu.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Menu content.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'fullscreen' | 'sl' | 'sm' | 'sf'">
+  Size variant for the menu.
+</ParamField>
+
+<ParamField path="maxHeight" type="string" default="'100vh'">
+  Maximum height for the scrollable content area.
+</ParamField>
+
+### Modal.MenuRight
+
+Right-aligned slide-in menu.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Menu content.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'fullscreen' | 'sl' | 'sm' | 'sf'">
+  Size variant for the menu.
+</ParamField>
+
+<ParamField path="maxHeight" type="string" default="'100vh'">
+  Maximum height for the scrollable content area.
+</ParamField>
+
+### Modal.Navigation
+
+Navigation tabs container for multi-page modals.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Navigation.Item components.
+</ParamField>
+
+### Modal.Navigation.Item
+
+Individual navigation tab button.
+
+<ParamField path="label" type="string" required>
+  Display text for the navigation item.
+</ParamField>
+
+<ParamField path="setPage" type="(page: string | number) => void" required>
+  Function to change the active page.
+</ParamField>
+
+<ParamField path="isActive" type="boolean" required>
+  Whether this navigation item is currently active.
+</ParamField>
+
+<ParamField path="pageId" type="string | number" required>
+  Unique identifier for this page.
+</ParamField>
+
+### Modal.Pages
+
+Animated page container wrapper using AnimatePresence.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Page content (typically conditionally rendered based on active page).
+</ParamField>
+
+## Examples
+
+### Simple Dialog
+
+```tsx
+import { Modal } from "@jeremiemeunier/modal";
+import { useState } from "react";
+
+export default function SimpleDialog() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setVisible(true)}>Open Dialog</button>
+      
+      {visible && (
+        <Modal>
+          <Modal.Background setVisibility={setVisible} />
+          <Modal.ModalCenter size="medium">
+            <Modal.Header>Confirm Action</Modal.Header>
+            <Modal.Close setVisibility={setVisible} />
+            <Modal.Body>
+              <p>Are you sure you want to proceed?</p>
+              <button onClick={() => setVisible(false)}>Cancel</button>
+              <button onClick={() => {
+                // perform action
+                setVisible(false);
+              }}>Confirm</button>
+            </Modal.Body>
+          </Modal.ModalCenter>
+        </Modal>
+      )}
+    </>
+  );
+}
+```
+
+### Side Menu
+
+```tsx
+import { Modal } from "@jeremiemeunier/modal";
+import { useState } from "react";
+
+export default function SideMenu() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setVisible(true)}>Open Menu</button>
+      
+      {visible && (
+        <Modal>
+          <Modal.Background setVisibility={setVisible} />
+          <Modal.MenuRight size="medium">
+            <Modal.Header>Settings</Modal.Header>
+            <Modal.Close setVisibility={setVisible} />
+            <Modal.Body>
+              <nav>
+                <a href="#profile">Profile</a>
+                <a href="#preferences">Preferences</a>
+                <a href="#security">Security</a>
+              </nav>
+            </Modal.Body>
+          </Modal.MenuRight>
+        </Modal>
+      )}
+    </>
+  );
+}
+```
+
+### Multi-Page Modal with Navigation
+
+```tsx
+import { Modal } from "@jeremiemeunier/modal";
+import { useState } from "react";
+
+export default function MultiPageModal() {
+  const [visible, setVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState("info");
+
+  return (
+    <>
+      <button onClick={() => setVisible(true)}>Open Modal</button>
+      
+      {visible && (
+        <Modal>
+          <Modal.Background setVisibility={setVisible} />
+          <Modal.ModalCenter size="large">
+            <Modal.Header>User Settings</Modal.Header>
+            <Modal.Close setVisibility={setVisible} />
+            
+            <Modal.Navigation>
+              <Modal.Navigation.Item
+                label="Info"
+                pageId="info"
+                setPage={setCurrentPage}
+                isActive={currentPage === "info"}
+              />
+              <Modal.Navigation.Item
+                label="Preferences"
+                pageId="preferences"
+                setPage={setCurrentPage}
+                isActive={currentPage === "preferences"}
+              />
+              <Modal.Navigation.Item
+                label="Security"
+                pageId="security"
+                setPage={setCurrentPage}
+                isActive={currentPage === "security"}
+              />
+            </Modal.Navigation>
+            
+            <Modal.Pages>
+              {currentPage === "info" && (
+                <Modal.Body>
+                  <h3>Account Information</h3>
+                  <p>Your account details...</p>
+                </Modal.Body>
+              )}
+              {currentPage === "preferences" && (
+                <Modal.Body>
+                  <h3>Preferences</h3>
+                  <p>Your preferences...</p>
+                </Modal.Body>
+              )}
+              {currentPage === "security" && (
+                <Modal.Body>
+                  <h3>Security Settings</h3>
+                  <p>Security options...</p>
+                </Modal.Body>
+              )}
+            </Modal.Pages>
+          </Modal.ModalCenter>
+        </Modal>
+      )}
+    </>
+  );
+}
+```
+
+## Features
+
+- Smooth enter/exit animations via Framer Motion
+- Multiple layout options (center, left menu, right menu)
+- Built-in scrollbar handling with SimpleBar
+- Configurable modal sizes
+- Multi-page support with animated transitions
+- Click-outside-to-close functionality
+- Optional refresh callbacks on close

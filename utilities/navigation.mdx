@@ -1,0 +1,335 @@
+---
+title: Navigation
+description: Navigation state management and pagination components
+---
+
+## Overview
+
+The Navigation package provides a lightweight React context provider and components for managing navigation state and pagination in your application. It handles page tracking, subpage navigation, categories, and menu visibility.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/navigation
+```
+
+Add the following to your `.npmrc` file:
+
+```npmrc
+@jeremiemeunier:registry=https://npm.pkg.github.com
+```
+
+## NavigationProvider
+
+### Basic Usage
+
+Wrap your application with `NavigationProvider` to enable navigation state management:
+
+```tsx
+import { NavigationProvider } from "@jeremiemeunier/navigation";
+
+function App() {
+  return (
+    <NavigationProvider>
+      {/* Your application */}
+    </NavigationProvider>
+  );
+}
+```
+
+### NavigationContext
+
+Access navigation state using the `NavigationContext`:
+
+```tsx
+import { useContext } from "react";
+import { NavigationContext } from "@jeremiemeunier/navigation";
+
+function MyComponent() {
+  const {
+    appActualPage,
+    setAppActualPage,
+    appActualSubPage,
+    setAppActualSubPage,
+    appActualCategory,
+    setAppActualCategory,
+    appMenuVisibility,
+    setAppMenuVisibility,
+  } = useContext(NavigationContext);
+
+  return (
+    <div>
+      <p>Current page: {appActualPage}</p>
+      <button onClick={() => setAppActualPage("home")}>
+        Go to Home
+      </button>
+    </div>
+  );
+}
+```
+
+## Context API
+
+### State Properties
+
+<ResponseField name="appActualPage" type="string">
+  The current active page identifier.
+</ResponseField>
+
+<ResponseField name="setAppActualPage" type="React.Dispatch<SetStateAction<string>>">
+  Function to update the current page.
+</ResponseField>
+
+<ResponseField name="appActualSubPage" type="string">
+  The current active subpage identifier.
+</ResponseField>
+
+<ResponseField name="setAppActualSubPage" type="React.Dispatch<SetStateAction<string>>">
+  Function to update the current subpage.
+</ResponseField>
+
+<ResponseField name="appActualCategory" type="string">
+  The current active category identifier.
+</ResponseField>
+
+<ResponseField name="setAppActualCategory" type="React.Dispatch<SetStateAction<string>>">
+  Function to update the current category.
+</ResponseField>
+
+<ResponseField name="appMenuVisibility" type="boolean">
+  Whether the menu is currently visible.
+</ResponseField>
+
+<ResponseField name="setAppMenuVisibility" type="React.Dispatch<SetStateAction<boolean>>">
+  Function to toggle menu visibility.
+</ResponseField>
+
+## Pagination
+
+### Basic Usage
+
+The `Pagination` component provides navigation controls for paginated content:
+
+```tsx
+import { useState } from "react";
+import { Pagination } from "@jeremiemeunier/navigation";
+
+function PaginatedList() {
+  const [page, setPage] = useState(1);
+
+  return (
+    <div>
+      {/* Your paginated content */}
+      <Pagination pages={10} page={page} setPage={setPage} />
+    </div>
+  );
+}
+```
+
+### Props
+
+<ParamField path="page" type="number" required>
+  Current page number (1-indexed).
+</ParamField>
+
+<ParamField path="setPage" type="React.Dispatch<React.SetStateAction<number>>" required>
+  State setter function to update the current page.
+</ParamField>
+
+<ParamField path="pages" type="number" default={1}>
+  Total number of pages available.
+</ParamField>
+
+<ParamField path="sticky" type="number">
+  Makes the pagination sticky when scrolling. The value represents the top offset position.
+</ParamField>
+
+<ParamField path="noSelect" type="boolean">
+  Hides the page selector dropdown, showing only navigation buttons.
+</ParamField>
+
+### Features
+
+- **Previous/Next buttons**: Navigate to adjacent pages
+- **Page selector dropdown**: Jump directly to any page
+- **Disabled states**: Automatically disables buttons at boundaries
+- **Sticky positioning**: Optional fixed position during scroll
+- **Responsive**: Adapts to different screen sizes
+
+## Examples
+
+### Managing Navigation State
+
+```tsx
+import { useContext } from "react";
+import { NavigationProvider, NavigationContext } from "@jeremiemeunier/navigation";
+
+function Navigation() {
+  const { appActualPage, setAppActualPage, appMenuVisibility, setAppMenuVisibility } = 
+    useContext(NavigationContext);
+
+  return (
+    <nav>
+      <button onClick={() => setAppMenuVisibility(!appMenuVisibility)}>
+        Toggle Menu
+      </button>
+      {appMenuVisibility && (
+        <ul>
+          <li onClick={() => setAppActualPage("home")}>Home</li>
+          <li onClick={() => setAppActualPage("about")}>About</li>
+          <li onClick={() => setAppActualPage("contact")}>Contact</li>
+        </ul>
+      )}
+      <p>Current: {appActualPage}</p>
+    </nav>
+  );
+}
+
+function App() {
+  return (
+    <NavigationProvider>
+      <Navigation />
+    </NavigationProvider>
+  );
+}
+```
+
+### Sticky Pagination
+
+```tsx
+import { useState } from "react";
+import { Pagination } from "@jeremiemeunier/navigation";
+
+function StickyPaginatedList() {
+  const [page, setPage] = useState(1);
+  const totalPages = 20;
+
+  return (
+    <div>
+      <div style={{ height: "2000px" }}>
+        {/* Long content */}
+      </div>
+      <Pagination 
+        pages={totalPages} 
+        page={page} 
+        setPage={setPage}
+        sticky={100} // Sticks 100px from top
+      />
+    </div>
+  );
+}
+```
+
+### Pagination Without Selector
+
+```tsx
+import { useState } from "react";
+import { Pagination } from "@jeremiemeunier/navigation";
+
+function SimplePagination() {
+  const [page, setPage] = useState(1);
+
+  return (
+    <Pagination 
+      pages={5} 
+      page={page} 
+      setPage={setPage}
+      noSelect // Only shows prev/next buttons
+    />
+  );
+}
+```
+
+### Hierarchical Navigation
+
+```tsx
+import { useContext } from "react";
+import { NavigationProvider, NavigationContext } from "@jeremiemeunier/navigation";
+
+function Breadcrumb() {
+  const { 
+    appActualCategory,
+    appActualPage,
+    appActualSubPage,
+    setAppActualPage,
+    setAppActualSubPage 
+  } = useContext(NavigationContext);
+
+  return (
+    <div className="breadcrumb">
+      <span>{appActualCategory}</span>
+      <span> / </span>
+      <button onClick={() => setAppActualSubPage("")}>
+        {appActualPage}
+      </button>
+      {appActualSubPage && (
+        <>
+          <span> / </span>
+          <span>{appActualSubPage}</span>
+        </>
+      )}
+    </div>
+  );
+}
+```
+
+### Complete Example
+
+```tsx
+import { useState, useContext } from "react";
+import { 
+  NavigationProvider, 
+  NavigationContext,
+  Pagination 
+} from "@jeremiemeunier/navigation";
+
+function Dashboard() {
+  const [page, setPage] = useState(1);
+  const { 
+    appActualPage, 
+    setAppActualPage,
+    appMenuVisibility,
+    setAppMenuVisibility 
+  } = useContext(NavigationContext);
+
+  const itemsPerPage = 10;
+  const totalPages = 15;
+
+  return (
+    <div>
+      <header>
+        <button onClick={() => setAppMenuVisibility(!appMenuVisibility)}>
+          Menu
+        </button>
+        {appMenuVisibility && (
+          <nav>
+            <a onClick={() => setAppActualPage("dashboard")}>Dashboard</a>
+            <a onClick={() => setAppActualPage("reports")}>Reports</a>
+            <a onClick={() => setAppActualPage("settings")}>Settings</a>
+          </nav>
+        )}
+      </header>
+
+      <main>
+        <h1>{appActualPage}</h1>
+        {/* Content for page {page} */}
+      </main>
+
+      <Pagination 
+        pages={totalPages}
+        page={page}
+        setPage={setPage}
+        sticky={80}
+      />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <NavigationProvider>
+      <Dashboard />
+    </NavigationProvider>
+  );
+}
+```

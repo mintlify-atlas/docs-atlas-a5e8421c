@@ -1,0 +1,247 @@
+---
+title: useSeo
+description: A React hook for managing SEO meta tags dynamically
+---
+
+## Overview
+
+The `useSeo` hook allows you to dynamically update SEO meta tags including the page title, description, Open Graph image, theme color, and more. It updates the document's meta tags whenever the provided values change.
+
+## Installation
+
+```bash
+npm install @windmillui/hooks
+```
+
+## Usage
+
+```tsx
+import { useSeo } from '@windmillui/hooks';
+
+function ProductPage({ product }) {
+  useSeo({
+    title: `${product.name} - My Store`,
+    description: product.description,
+    image: product.imageUrl,
+    color: '#007bff',
+  });
+
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+    </div>
+  );
+}
+```
+
+## API Reference
+
+### Parameters
+
+The hook accepts a single object with the following optional properties:
+
+```tsx
+interface SeoProps {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  color?: string;
+  type?: "website";
+  image?: string;
+}
+```
+
+#### `title`
+
+- **Type:** `string` (optional)
+- **Description:** Sets the document title (`<title>` tag) and updates all meta tags with `data-seo-title` attribute
+- **Example:** `"Product Details - My Store"`
+
+#### `description`
+
+- **Type:** `string` (optional)
+- **Description:** Updates all meta tags with `data-seo-description` attribute (typically Open Graph and Twitter Card descriptions)
+- **Example:** `"High-quality product with amazing features"`
+
+#### `keywords`
+
+- **Type:** `string` (optional)
+- **Description:** SEO keywords (currently tracked but not actively used in the hook implementation)
+- **Example:** `"product, shopping, online store"`
+
+#### `color`
+
+- **Type:** `string` (optional)
+- **Description:** Sets the theme color for the page, updating all meta tags with `data-seo-theme` attribute
+- **Example:** `"#007bff"`, `"rgb(0, 123, 255)"`
+
+#### `type`
+
+- **Type:** `"website"` (optional)
+- **Description:** Specifies the Open Graph type (currently only "website" is supported)
+- **Example:** `"website"`
+
+#### `image`
+
+- **Type:** `string` (optional)
+- **Description:** Sets the Open Graph image URL, updating all meta tags with `data-seo-image` attribute
+- **Example:** `"https://example.com/og-image.jpg"`
+
+## Examples
+
+### Basic Page SEO
+
+```tsx
+import { useSeo } from '@windmillui/hooks';
+
+function AboutPage() {
+  useSeo({
+    title: 'About Us - Company Name',
+    description: 'Learn more about our company and mission',
+    color: '#1a73e8',
+  });
+
+  return (
+    <div>
+      <h1>About Us</h1>
+      <p>We are a company dedicated to...</p>
+    </div>
+  );
+}
+```
+
+### Dynamic Product Page
+
+```tsx
+import { useSeo } from '@windmillui/hooks';
+import { useParams } from 'react-router-dom';
+
+function ProductDetail() {
+  const { productId } = useParams();
+  const { data: product } = useQuery(['product', productId], fetchProduct);
+
+  useSeo({
+    title: product ? `${product.name} - Store` : 'Loading...',
+    description: product?.description,
+    image: product?.images[0]?.url,
+    keywords: product?.tags?.join(', '),
+  });
+
+  if (!product) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <img src={product.images[0]?.url} alt={product.name} />
+      <p>{product.description}</p>
+    </div>
+  );
+}
+```
+
+### Blog Post with Full SEO
+
+```tsx
+import { useSeo } from '@windmillui/hooks';
+
+function BlogPost({ post }) {
+  useSeo({
+    title: `${post.title} - Blog`,
+    description: post.excerpt,
+    image: post.featuredImage,
+    keywords: post.tags.join(', '),
+    type: 'website',
+    color: '#ff6b6b',
+  });
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <img src={post.featuredImage} alt={post.title} />
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </article>
+  );
+}
+```
+
+### Conditional SEO Updates
+
+```tsx
+import { useSeo } from '@windmillui/hooks';
+import { useState } from 'react';
+
+function SearchResults() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  useSeo({
+    title: query 
+      ? `Search Results for "${query}" - Store`
+      : 'Search - Store',
+    description: query
+      ? `Found ${results.length} results for ${query}`
+      : 'Search our products',
+  });
+
+  return (
+    <div>
+      <input 
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search products..."
+      />
+      <div>
+        {results.map(result => (
+          <div key={result.id}>{result.name}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## Setup Requirements
+
+For `useSeo` to work properly, you need to add the appropriate meta tags with data attributes in your HTML:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Default Title</title>
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#000000" data-seo-theme />
+    
+    <!-- Description -->
+    <meta name="description" content="Default description" data-seo-description />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Default Title" data-seo-title />
+    <meta property="og:description" content="Default description" data-seo-description />
+    <meta property="og:image" content="/default-og.jpg" data-seo-image />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:title" content="Default Title" data-seo-title />
+    <meta name="twitter:description" content="Default description" data-seo-description />
+    <meta name="twitter:image" content="/default-og.jpg" data-seo-image />
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+## Notes
+
+- The hook uses `useEffect` to update meta tags whenever any of the SEO properties change
+- Meta tags are selected using data attributes (`data-seo-title`, `data-seo-description`, etc.)
+- Multiple meta tags with the same data attribute will all be updated (useful for Open Graph and Twitter Cards)
+- The `title` parameter directly updates `document.title`
+- The `keywords` parameter is currently tracked but not actively used in the implementation
+
+## Related
+
+- [Open Graph Protocol](https://ogp.me/)
+- [Twitter Card Documentation](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards)

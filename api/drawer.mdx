@@ -1,0 +1,89 @@
+---
+title: '@jeremiemeunier/drawer'
+description: 'Drawer component for slide-out navigation and content'
+icon: 'sidebar'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/drawer
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### Drawer
+
+A drawer component that provides a slide-out panel for navigation or additional content.
+
+**Props:**
+
+```typescript
+interface DrawerProps {
+  drawerContainer?: React.ReactNode;
+  children: React.ReactNode;
+}
+```
+
+**Parameters:**
+
+- `drawerContainer` (optional): Content to display in the drawer
+- `children` (required): Main content of the application
+
+**Usage:**
+
+```tsx
+import { Drawer } from '@jeremiemeunier/drawer';
+
+<Drawer
+  drawerContainer={
+    <nav>
+      <a href="/home">Home</a>
+      <a href="/about">About</a>
+    </nav>
+  }
+>
+  <main>Your main content</main>
+</Drawer>
+```
+
+## Context API
+
+### DrawerContext
+
+The drawer uses a context provider to manage its state.
+
+**Context Props:**
+
+```typescript
+interface ContextProps {
+  children: React.ReactNode;
+  setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface ProviderProps {
+  drawerContentRef: any;
+  setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  drawerOpen: boolean;
+}
+```
+
+## Dependencies
+
+- **framer-motion**: ^12.23.12
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export * from "./context";
+```

@@ -1,0 +1,422 @@
+---
+title: useToasts
+description: A React hook for displaying toast notifications
+---
+
+## Overview
+
+The `useToasts` hook provides a simple API to display toast notifications in your application. It supports different types of toasts (positive, negative, neutral), loading states, custom durations, and persistent toasts that don't auto-dismiss.
+
+## Installation
+
+```bash
+npm install @windmillui/toast
+```
+
+## Setup
+
+First, wrap your application with the `ToastProvider`:
+
+```tsx
+import { ToastProvider } from '@windmillui/toast';
+
+function App() {
+  return (
+    <ToastProvider>
+      <YourApp />
+    </ToastProvider>
+  );
+}
+```
+
+## Usage
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function MyComponent() {
+  const { pushToast } = useToasts();
+
+  const handleSuccess = () => {
+    pushToast({
+      content: 'Operation completed successfully!',
+      type: 'positive',
+    });
+  };
+
+  return (
+    <button onClick={handleSuccess}>
+      Show Success Toast
+    </button>
+  );
+}
+```
+
+## API Reference
+
+### Return Value
+
+The hook returns an object with the following methods:
+
+#### `pushToast`
+
+```tsx
+pushToast: (toast: ToastObject) => ToastObject
+```
+
+Displays a new toast notification.
+
+**Parameters:**
+- `toast`: `ToastObject` - The toast configuration object
+
+**Returns:**
+- `ToastObject` - The created toast object with an assigned `id` and `timer`
+
+#### `clearToast`
+
+```tsx
+clearToast: (toast: ToastObject) => void
+```
+
+Manually clears a specific toast notification.
+
+**Parameters:**
+- `toast`: `ToastObject` - The toast object to clear (typically the one returned by `pushToast`)
+
+### ToastObject Interface
+
+```tsx
+interface ToastObject {
+  content: string;                                          // Required
+  type: "positive" | "negative" | "neutral" | null;        // Required
+  title?: string;
+  duration?: number;
+  persistent?: boolean;
+  loading?: boolean;
+  icon?: string | string[];
+  position?: "tl" | "tr" | "bl" | "br" | "cl" | "cr";
+  format?: {
+    icon?: "left" | "right" | "both";
+  };
+  id?: number;                                             // Auto-generated
+  timer?: number;                                          // Auto-generated
+  timed?: number;
+}
+```
+
+#### Required Properties
+
+**`content`**
+- **Type:** `string`
+- **Description:** The main message text of the toast
+- **Example:** `"User created successfully"`
+
+**`type`**
+- **Type:** `"positive" | "negative" | "neutral" | null`
+- **Description:** The type/style of the toast
+  - `positive`: Success messages (typically green)
+  - `negative`: Error messages (typically red)
+  - `neutral`: Informational messages (typically gray/blue)
+  - `null`: Default/unstyled
+
+#### Optional Properties
+
+**`title`**
+- **Type:** `string`
+- **Description:** Optional title displayed above the content
+- **Example:** `"Success"`
+
+**`duration`**
+- **Type:** `number`
+- **Description:** How long the toast stays visible in seconds (default: 5)
+- **Example:** `3` for 3 seconds
+
+**`persistent`**
+- **Type:** `boolean`
+- **Description:** If true, toast won't auto-dismiss and must be manually closed
+- **Example:** `true`
+
+**`loading`**
+- **Type:** `boolean`
+- **Description:** Displays a loading indicator and prevents auto-dismiss
+- **Example:** `true`
+
+**`icon`**
+- **Type:** `string | string[]`
+- **Description:** Custom icon(s) to display in the toast
+- **Example:** `"✓"` or `["⚠", "!"]`
+
+**`position`**
+- **Type:** `"tl" | "tr" | "bl" | "br" | "cl" | "cr"`
+- **Description:** Position of the toast on screen
+  - `tl`: Top Left
+  - `tr`: Top Right
+  - `bl`: Bottom Left
+  - `br`: Bottom Right
+  - `cl`: Center Left
+  - `cr`: Center Right
+
+**`format`**
+- **Type:** `{ icon?: "left" | "right" | "both" }`
+- **Description:** Icon positioning configuration
+
+## Examples
+
+### Basic Success Toast
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function SaveButton() {
+  const { pushToast } = useToasts();
+
+  const handleSave = async () => {
+    try {
+      await saveData();
+      pushToast({
+        content: 'Data saved successfully!',
+        type: 'positive',
+      });
+    } catch (error) {
+      pushToast({
+        content: 'Failed to save data',
+        type: 'negative',
+      });
+    }
+  };
+
+  return <button onClick={handleSave}>Save</button>;
+}
+```
+
+### Toast with Custom Duration
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function QuickNotification() {
+  const { pushToast } = useToasts();
+
+  const showQuickMessage = () => {
+    pushToast({
+      content: 'Quick message!',
+      type: 'neutral',
+      duration: 2, // Disappears after 2 seconds
+    });
+  };
+
+  return <button onClick={showQuickMessage}>Show Quick Message</button>;
+}
+```
+
+### Loading Toast
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+import { useState } from 'react';
+
+function FileUploader() {
+  const { pushToast, clearToast } = useToasts();
+  const [uploadToast, setUploadToast] = useState(null);
+
+  const handleUpload = async (file: File) => {
+    // Show loading toast
+    const toast = pushToast({
+      content: 'Uploading file...',
+      type: 'neutral',
+      loading: true,
+    });
+    setUploadToast(toast);
+
+    try {
+      await uploadFile(file);
+      
+      // Clear loading toast
+      clearToast(toast);
+      
+      // Show success toast
+      pushToast({
+        content: 'File uploaded successfully!',
+        type: 'positive',
+        duration: 3,
+      });
+    } catch (error) {
+      clearToast(toast);
+      pushToast({
+        content: 'Upload failed',
+        type: 'negative',
+      });
+    }
+  };
+
+  return (
+    <input 
+      type="file" 
+      onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
+    />
+  );
+}
+```
+
+### Persistent Toast
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function ImportantMessage() {
+  const { pushToast, clearToast } = useToasts();
+
+  const showImportantMessage = () => {
+    const toast = pushToast({
+      title: 'Important Notice',
+      content: 'Please read the terms and conditions',
+      type: 'neutral',
+      persistent: true, // Won't auto-dismiss
+    });
+
+    // Manually clear after user action
+    setTimeout(() => clearToast(toast), 10000);
+  };
+
+  return <button onClick={showImportantMessage}>Show Notice</button>;
+}
+```
+
+### Toast with Title and Icon
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function NotificationCenter() {
+  const { pushToast } = useToasts();
+
+  const showNotification = () => {
+    pushToast({
+      title: 'New Message',
+      content: 'You have received a new message from John',
+      type: 'neutral',
+      icon: '📧',
+      duration: 5,
+    });
+  };
+
+  return <button onClick={showNotification}>Show Notification</button>;
+}
+```
+
+### Error Toast with Longer Duration
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function DeleteButton({ itemId }: { itemId: string }) {
+  const { pushToast } = useToasts();
+
+  const handleDelete = async () => {
+    try {
+      await deleteItem(itemId);
+      pushToast({
+        content: 'Item deleted',
+        type: 'positive',
+        duration: 3,
+      });
+    } catch (error) {
+      pushToast({
+        title: 'Deletion Failed',
+        content: error.message || 'Could not delete item. Please try again.',
+        type: 'negative',
+        duration: 7, // Show errors longer
+      });
+    }
+  };
+
+  return <button onClick={handleDelete}>Delete</button>;
+}
+```
+
+### Multiple Toast Types
+
+```tsx
+import { useToasts } from '@windmillui/toast';
+
+function ToastDemo() {
+  const { pushToast } = useToasts();
+
+  return (
+    <div>
+      <button onClick={() => pushToast({
+        content: 'This is a success message',
+        type: 'positive',
+      })}>
+        Success
+      </button>
+
+      <button onClick={() => pushToast({
+        content: 'This is an error message',
+        type: 'negative',
+      })}>
+        Error
+      </button>
+
+      <button onClick={() => pushToast({
+        content: 'This is an info message',
+        type: 'neutral',
+      })}>
+        Info
+      </button>
+
+      <button onClick={() => pushToast({
+        title: 'With Title',
+        content: 'This toast has a title',
+        type: 'positive',
+      })}>
+        With Title
+      </button>
+    </div>
+  );
+}
+```
+
+## Behavior Notes
+
+- Only one toast is displayed at a time (new toasts replace existing ones)
+- Toasts can be dismissed by clicking on them (if they have a timer)
+- Non-persistent, non-loading toasts auto-dismiss after the specified duration (default 5 seconds)
+- Loading toasts and persistent toasts must be manually cleared
+- Toasts animate in from bottom with a slide-up effect
+- When a new toast is pushed, existing timers are cleared
+
+## Styling
+
+The toast system includes:
+
+- Smooth slide-up animations powered by Framer Motion
+- Automatic positioning and stacking
+- Responsive design
+- Built-in type-based styling (positive, negative, neutral)
+
+## Provider Props
+
+### `ToastProvider`
+
+The provider accepts the following props:
+
+```tsx
+interface ContextProps {
+  children: React.ReactNode;
+}
+```
+
+- `children`: Your application components
+
+## Notes
+
+- All toast control functions are memoized with `useCallback` for optimal performance
+- Toast IDs are automatically generated using timestamps
+- The toast system uses Framer Motion for animations
+- Toasts are rendered in a portal-like container that overlays your application
+
+## Related
+
+- [Framer Motion Documentation](https://www.framer.com/motion/)
+- [Toast Component](/components/toast)

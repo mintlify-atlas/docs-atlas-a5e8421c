@@ -1,0 +1,444 @@
+---
+title: X-Form Components
+description: Complete reference for all FormData-based form components
+---
+
+## XForm
+
+The main form wrapper that automatically handles FormData extraction.
+
+### Props
+
+- `onSubmit: (formData: FormData, event: FormEvent) => void` - Form submission handler
+- `className?: string` - Additional CSS classes
+- `children: React.ReactNode` - Form elements
+
+### Example
+
+```tsx
+<XForm onSubmit={(formData) => console.log(formData)}>
+  {/* Form fields */}
+</XForm>
+```
+
+### Features
+
+- Automatically prevents default form submission
+- Extracts FormData from the form and passes it to your handler
+- Includes `enctype="multipart/form-data"` for file upload support
+- Applies `windmillui-form` CSS class
+
+---
+
+## XInput
+
+FormData-compatible input field for text, email, numbers, files, and more.
+
+### Props
+
+- `name: string` - Field name (required for FormData)
+- `label?: string` - Input label
+- `type?: string` - HTML input type (default: "text")
+- `placeholder?: string` - Placeholder text
+- `defaultValue?: string | number` - Default value
+- `required?: boolean` - Make field required
+- `disabled?: boolean` - Disable the input
+- `readOnly?: boolean` - Make input read-only
+- `maxLength?: number` - Maximum character length
+- `min?: number` - Minimum value (for number/date inputs)
+- `max?: number` - Maximum value (for number/date inputs)
+- `step?: number` - Step value (for number inputs)
+- `size?: number` - Grid size (1-12)
+- `error?: string` - Error message to display
+- `tagline?: string` - Helper text below the input
+- `autofocus?: boolean` - Auto-focus on mount
+- `autoComplete?: string` - Autocomplete attribute
+- `className?: string` - Additional CSS classes
+
+### Examples
+
+#### Text Input
+
+```tsx
+<XInput
+  name="email"
+  label="Email Address"
+  type="email"
+  placeholder="you@example.com"
+  required
+/>
+```
+
+#### Number Input with Constraints
+
+```tsx
+<XInput
+  name="age"
+  label="Age"
+  type="number"
+  min={18}
+  max={100}
+  step={1}
+  required
+/>
+```
+
+#### File Upload
+
+```tsx
+<XInput
+  name="document"
+  label="Upload Document"
+  type="file"
+  required
+/>
+```
+
+#### With Character Counter
+
+```tsx
+<XInput
+  name="username"
+  label="Username"
+  maxLength={20}
+  placeholder="Choose a username"
+/>
+```
+
+---
+
+## XTextArea
+
+FormData-compatible textarea field for multi-line text input.
+
+### Props
+
+- `name: string` - Field name (required)
+- `label?: string` - Textarea label
+- `placeholder?: string` - Placeholder text
+- `defaultValue?: string` - Default value
+- `required?: boolean` - Make field required
+- `disabled?: boolean` - Disable the textarea
+- `readOnly?: boolean` - Make textarea read-only
+- `rows?: number` - Number of visible text rows
+- `maxLength?: number` - Maximum character length
+- `error?: string` - Error message to display
+- `tagline?: string` - Helper text below the textarea
+- `className?: string` - Additional CSS classes
+
+### Example
+
+```tsx
+<XTextArea
+  name="description"
+  label="Description"
+  rows={5}
+  maxLength={500}
+  placeholder="Enter a detailed description"
+  required
+/>
+```
+
+---
+
+## XSelect
+
+FormData-compatible select dropdown.
+
+### Props
+
+- `name: string` - Field name (required)
+- `label?: string` - Select label
+- `defaultValue?: string` - Default selected value
+- `required?: boolean` - Make field required
+- `disabled?: boolean` - Disable the select
+- `error?: string` - Error message to display
+- `tagline?: string` - Helper text below the select
+- `className?: string` - Additional CSS classes
+- `children: React.ReactNode` - Option elements
+
+### Example
+
+```tsx
+<XSelect name="country" label="Country" required>
+  <option value="">Select a country</option>
+  <option value="FR">France</option>
+  <option value="DE">Germany</option>
+  <option value="US">United States</option>
+  <option value="UK">United Kingdom</option>
+</XSelect>
+```
+
+### Dynamic Options
+
+```tsx
+const countries = [
+  { code: "FR", name: "France" },
+  { code: "DE", name: "Germany" },
+  { code: "US", name: "United States" },
+];
+
+<XSelect name="country" label="Country" required>
+  <option value="">Select a country</option>
+  {countries.map(country => (
+    <option key={country.code} value={country.code}>
+      {country.name}
+    </option>
+  ))}
+</XSelect>
+```
+
+---
+
+## XCheckbox
+
+FormData-compatible checkbox field.
+
+### Props
+
+- `name: string` - Field name (required)
+- `label?: string` - Checkbox label
+- `value?: string` - Value when checked (default: "on")
+- `defaultChecked?: boolean` - Initially checked state
+- `disabled?: boolean` - Disable the checkbox
+- `error?: string` - Error message to display
+- `className?: string` - Additional CSS classes
+- `children?: React.ReactNode` - Label content (alternative to label prop)
+
+### Examples
+
+#### Simple Checkbox
+
+```tsx
+<XCheckbox name="terms" value="accepted" required>
+  I agree to the terms and conditions
+</XCheckbox>
+```
+
+#### With Label Prop
+
+```tsx
+<XCheckbox
+  name="newsletter"
+  label="Subscribe to newsletter"
+  value="yes"
+  defaultChecked={true}
+/>
+```
+
+#### Multiple Checkboxes (Same Name)
+
+```tsx
+<XCheckbox name="interests" value="sports">
+  Sports
+</XCheckbox>
+<XCheckbox name="interests" value="music">
+  Music
+</XCheckbox>
+<XCheckbox name="interests" value="art">
+  Art
+</XCheckbox>
+
+// Access in submit handler:
+const handleSubmit = (formData: FormData) => {
+  const interests = formData.getAll("interests");
+  console.log(interests); // ["sports", "music"] if both checked
+};
+```
+
+---
+
+## XRadio
+
+FormData-compatible radio button group.
+
+### Props
+
+- `name: string` - Field name (required, same for all options in group)
+- `label?: string` - Group label
+- `options: Array<{value: string, label: string}>` - Radio options
+- `defaultValue?: string` - Default selected value
+- `required?: boolean` - Make selection required
+- `disabled?: boolean` - Disable all radio buttons
+- `gridSize?: number` - Grid columns for layout (default: 2)
+- `error?: string` - Error message to display
+- `tagline?: string` - Helper text below the radio group
+- `className?: string` - Additional CSS classes
+
+### Example
+
+```tsx
+<XRadio
+  name="plan"
+  label="Select a plan"
+  options={[
+    { value: "free", label: "Free Plan" },
+    { value: "pro", label: "Pro Plan" },
+    { value: "enterprise", label: "Enterprise Plan" },
+  ]}
+  defaultValue="free"
+  required
+/>
+```
+
+### With Custom Grid Layout
+
+```tsx
+<XRadio
+  name="size"
+  label="Select size"
+  options={[
+    { value: "xs", label: "Extra Small" },
+    { value: "s", label: "Small" },
+    { value: "m", label: "Medium" },
+    { value: "l", label: "Large" },
+    { value: "xl", label: "Extra Large" },
+  ]}
+  gridSize={3}
+  required
+/>
+```
+
+---
+
+## XSubmit
+
+Submit button component.
+
+### Props
+
+- `label?: string` - Button label
+- `disabled?: boolean` - Disable the button
+- `appearance?: "primary" | "secondary" | "danger"` - Button style
+- `className?: string` - Additional CSS classes
+- `children?: React.ReactNode` - Button content (alternative to label prop)
+
+### Examples
+
+#### Basic Submit Button
+
+```tsx
+<XSubmit label="Submit Form" appearance="primary" />
+```
+
+#### With Children
+
+```tsx
+<XSubmit appearance="primary">
+  Send Message
+</XSubmit>
+```
+
+#### Different Appearances
+
+```tsx
+<XSubmit label="Save" appearance="primary" />
+<XSubmit label="Cancel" appearance="secondary" />
+<XSubmit label="Delete" appearance="danger" />
+```
+
+---
+
+## Complete Form Example
+
+Here's a complete example using multiple components:
+
+```tsx
+import {
+  XForm,
+  XInput,
+  XTextArea,
+  XSelect,
+  XRadio,
+  XCheckbox,
+  XSubmit,
+} from "@jeremiemeunier/x-form";
+
+function ContactForm() {
+  const handleSubmit = (formData: FormData) => {
+    // Extract all form data
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      country: formData.get("country"),
+      message: formData.get("message"),
+      priority: formData.get("priority"),
+      subscribe: formData.get("subscribe"),
+      attachment: formData.get("attachment"),
+    };
+
+    // Send to API
+    fetch("/api/contact", {
+      method: "POST",
+      body: formData,
+    });
+  };
+
+  return (
+    <XForm onSubmit={handleSubmit}>
+      <XInput
+        name="name"
+        label="Full Name"
+        placeholder="John Doe"
+        required
+      />
+      
+      <XInput
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="john@example.com"
+        required
+      />
+      
+      <XInput
+        name="phone"
+        label="Phone Number"
+        type="tel"
+        placeholder="+1 (555) 123-4567"
+      />
+      
+      <XSelect name="country" label="Country" required>
+        <option value="">Select a country</option>
+        <option value="US">United States</option>
+        <option value="UK">United Kingdom</option>
+        <option value="FR">France</option>
+      </XSelect>
+      
+      <XRadio
+        name="priority"
+        label="Priority"
+        options={[
+          { value: "low", label: "Low" },
+          { value: "medium", label: "Medium" },
+          { value: "high", label: "High" },
+        ]}
+        defaultValue="medium"
+        required
+      />
+      
+      <XTextArea
+        name="message"
+        label="Message"
+        rows={6}
+        maxLength={1000}
+        placeholder="Enter your message here"
+        required
+      />
+      
+      <XInput
+        name="attachment"
+        label="Attachment"
+        type="file"
+      />
+      
+      <XCheckbox name="subscribe" value="yes">
+        Subscribe to newsletter
+      </XCheckbox>
+      
+      <XSubmit label="Send Message" appearance="primary" />
+    </XForm>
+  );
+}
+```

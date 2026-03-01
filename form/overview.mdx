@@ -1,0 +1,150 @@
+---
+title: "Form Components"
+description: "A comprehensive collection of form input components with built-in validation and state management"
+---
+
+## Overview
+
+The Form package (`@jeremiemeunier/form`) provides a complete set of form components for building interactive user interfaces. Each component follows a consistent state management pattern using the `content/setContent` props, making it easy to handle form data, validation, and error states.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="State Management" icon="database">
+    Unified content/setContent pattern for all form components
+  </Card>
+  <Card title="Built-in Validation" icon="check">
+    Error handling and validation messages out of the box
+  </Card>
+  <Card title="Accessible" icon="universal-access">
+    Semantic HTML with proper labels and ARIA attributes
+  </Card>
+  <Card title="Customizable" icon="palette">
+    Flexible styling with className props and CSS variables
+  </Card>
+</CardGroup>
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/form
+```
+
+## Basic Usage
+
+All form components follow a consistent pattern:
+
+```jsx
+import { Input } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [emailContent, setEmailContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  return (
+    <Input
+      label="Email"
+      content={emailContent}
+      setContent={setEmailContent}
+      type="email"
+      required
+    />
+  );
+}
+```
+
+## Content State Interface
+
+Most form components use the `InputContent` interface:
+
+```typescript
+interface InputContent {
+  error: boolean;    // Whether the field has an error
+  message: string;   // Error or helper message
+  value: any | null; // The field value
+}
+```
+
+Specific components may extend this interface with additional properties or type constraints.
+
+## Available Components
+
+<CardGroup cols={2}>
+  <Card title="Input" icon="input-text" href="/form/input">
+    Text input with validation and character counting
+  </Card>
+  <Card title="Select" icon="list" href="/form/select">
+    Dropdown selection component
+  </Card>
+  <Card title="Checkbox" icon="square-check" href="/form/checkbox">
+    Single checkbox or checkbox group
+  </Card>
+  <Card title="Radio" icon="circle-dot" href="/form/radio">
+    Radio button groups
+  </Card>
+  <Card title="TextArea" icon="align-left" href="/form/textarea">
+    Multi-line text input with auto-resize
+  </Card>
+  <Card title="DatePicker" icon="calendar" href="/form/datepicker">
+    Interactive calendar date selector
+  </Card>
+  <Card title="FileInput" icon="file" href="/form/fileinput">
+    File upload component
+  </Card>
+  <Card title="Autocomplete" icon="magnifying-glass" href="/form/autocomplete">
+    Searchable dropdown with filtering
+  </Card>
+  <Card title="TagInput" icon="tags" href="/form/taginput">
+    Multi-value tag input
+  </Card>
+  <Card title="Password" icon="lock" href="/form/password">
+    Password input with strength validation
+  </Card>
+  <Card title="TotpInput" icon="key" href="/form/totpinput">
+    One-time password input
+  </Card>
+  <Card title="DragAndDrop" icon="upload" href="/form/draganddrop">
+    Drag and drop file upload
+  </Card>
+  <Card title="Progress" icon="chart-line" href="/form/progress">
+    Progress bar indicator
+  </Card>
+</CardGroup>
+
+## Common Props
+
+Many form components share these common props:
+
+<ParamField path="label" type="string">
+  Label text displayed above the input
+</ParamField>
+
+<ParamField path="size" type="number">
+  Size of the input field (grid units)
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Whether the input is disabled
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean">
+  Shows a loading state indicator
+</ParamField>
+
+<ParamField path="required" type="boolean">
+  Marks the field as required
+</ParamField>
+
+## Next Steps
+
+<Card title="Explore Components" icon="arrow-right" href="/form/input">
+  Start with the Input component to learn the core concepts
+</Card>

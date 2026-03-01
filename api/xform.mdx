@@ -1,0 +1,159 @@
+---
+title: '@jeremiemeunier/xform'
+description: 'FormData-focused form components for efficient form handling'
+icon: 'file-import'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/xform
+```
+
+## Package Information
+
+- **Version**: 1.0.1
+- **Description**: FormData-focused fork of form components for efficient form handling
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Overview
+
+This package is a FormData-focused alternative to `@jeremiemeunier/form`. It provides form components that work directly with FormData API for more efficient form handling, especially useful for file uploads and modern form submission patterns.
+
+## Key Differences from @jeremiemeunier/form
+
+- Uses FormData API directly instead of controlled state
+- Simplified component props without `content` and `setContent`
+- Better performance for large forms
+- Native browser form validation support
+- Ideal for file uploads and multipart forms
+
+## Components
+
+### Form
+
+Main form container that provides FormData to the submit handler.
+
+```typescript
+interface FormProps {
+  children: React.ReactNode;
+  onSubmit: (formData: FormData, event: FormEvent<HTMLFormElement>) => void;
+  className?: string;
+}
+```
+
+**Usage:**
+
+```tsx
+import { Form } from '@jeremiemeunier/xform';
+
+const handleSubmit = (formData: FormData, event: FormEvent) => {
+  const email = formData.get('email');
+  const password = formData.get('password');
+  // Handle submission
+};
+
+<Form onSubmit={handleSubmit}>
+  {/* Form inputs */}
+</Form>
+```
+
+### Input
+
+Simplified input component using native form behavior.
+
+```typescript
+interface InputProps {
+  name: string;
+  label?: string;
+  size?: number;
+  readOnly?: boolean;
+  tagline?: React.ReactNode;
+  type?: HTMLInputTypeAttribute;
+  maxLength?: number;
+  placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  autofocus?: boolean;
+  autoComplete?: HTMLInputAutoCompleteAttribute;
+  className?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  defaultValue?: string | number;
+  error?: string;
+}
+```
+
+**Usage:**
+
+```tsx
+import { Input } from '@jeremiemeunier/xform';
+
+<Input
+  name="email"
+  label="Email Address"
+  type="email"
+  required
+  placeholder="user@example.com"
+/>
+```
+
+### Available Form Components
+
+The package exports the following components:
+
+- **Adress**: Address input component
+- **AutoComplete**: Autocomplete input with suggestions
+- **Checkbox**: Checkbox input
+- **Form**: Form container with FormData support
+- **Input**: Text input
+- **Radio**: Radio button input
+- **Select**: Select dropdown
+- **Submit**: Submit button
+- **TextArea**: Multi-line text input
+- **TotpInput**: TOTP/OTP input for authentication codes
+
+## Usage Pattern
+
+Unlike the `@jeremiemeunier/form` package, xform components don't require state management:
+
+```tsx
+import { Form, Input, Submit } from '@jeremiemeunier/xform';
+
+function LoginForm() {
+  const handleSubmit = (formData: FormData) => {
+    const credentials = {
+      email: formData.get('email'),
+      password: formData.get('password')
+    };
+    // Submit to API
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Input name="email" label="Email" type="email" required />
+      <Input name="password" label="Password" type="password" required />
+      <Submit>Login</Submit>
+    </Form>
+  );
+}
+```
+
+## Peer Dependencies
+
+- **react**: ^19.0.0 || ^18.0.0
+- **react-dom**: ^19.0.0 || ^18.0.0
+
+## Dependencies
+
+- **@jeremiemeunier/core**: ^1.4.7
+- **framer-motion**: ^12.23.24
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export * from "./components";
+```

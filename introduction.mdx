@@ -1,0 +1,124 @@
+---
+title: Introduction
+description: A comprehensive collection of React components and hooks for building modern web applications
+---
+
+## Welcome to Windmill Components
+
+Windmill Components is a comprehensive collection of React libraries published under the `@jeremiemeunier` scope. Each package is independently published and maintained, allowing you to install only the components you need.
+
+<CardGroup cols={2}>
+  <Card title="Form Components" icon="rectangle-list" href="/form/overview">
+    Complete collection of form elements including Input, Select, Checkbox, DatePicker, and more
+  </Card>
+  <Card title="UI Components" icon="window" href="/ui/carousel">
+    Carousel, Modal, Drawer, Toast notifications, and custom Cursor components
+  </Card>
+  <Card title="Hooks" icon="hook" href="/hooks/userefresh">
+    Reusable React hooks like useRefresh and useSeo for common functionality
+  </Card>
+  <Card title="Theme System" icon="palette" href="/utilities/theme">
+    Complete theme management with context and selection components
+  </Card>
+</CardGroup>
+
+## Key Features
+
+<CardGroup cols={3}>
+  <Card title="Modular Architecture" icon="cubes">
+    Install only what you need. Each package is independent and can be used standalone.
+  </Card>
+  <Card title="TypeScript Support" icon="code">
+    Full TypeScript definitions included for type safety and better developer experience.
+  </Card>
+  <Card title="React 19 Ready" icon="react">
+    Built with React 19 and modern best practices for optimal performance.
+  </Card>
+  <Card title="Framer Motion" icon="wand-magic-sparkles">
+    Smooth animations powered by Framer Motion for delightful user experiences.
+  </Card>
+  <Card title="FormData Optimized" icon="file-code">
+    X-Form package provides components optimized for automatic FormData extraction.
+  </Card>
+  <Card title="Customizable" icon="paint-brush">
+    Flexible styling and theming options to match your brand and design system.
+  </Card>
+</CardGroup>
+
+## Available Packages
+
+| Package | Description |
+| ------- | ----------- |
+| **core** | Base components and utilities (e.g., `Loader`) |
+| **carousel** | Carousel component for scrolling content |
+| **cursor** | Custom cursor that highlights links |
+| **drawer** | Sliding side panel component |
+| **editorparser** | Parser to display JSON editor content |
+| **form** | Large collection of form elements: `Input`, `Select`, `Checkbox`, `DatePicker`, etc. |
+| **x-form** | FormData fork - form components optimized for automatic FormData extraction |
+| **hooks** | Reusable React hooks like `useRefresh` and `useSeo` |
+| **modal** | Complete modal system with many sub-components |
+| **navigation** | Provider and hook for managing navigation state |
+| **theme** | Theme management with context and selection components |
+| **toast** | Toast notification library |
+| **popover** | Popover component for contextual overlays |
+
+## Quick Example
+
+Here's a quick example of using the Form components:
+
+```tsx
+import { Form, Input, Submit } from "@jeremiemeunier/form";
+import { useState } from "react";
+
+function MyForm() {
+  const [content, setContent] = useState({ email: "" });
+  const [error, setError] = useState({ email: "" });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Form submitted:", content);
+  };
+
+  return (
+    <Form
+      content={content}
+      setContent={setContent}
+      error={error}
+      setError={setError}
+      submit={{
+        label: "Submit",
+        action: handleSubmit,
+        appearance: "primary"
+      }}
+    >
+      <Input
+        label="Email Address"
+        content={content.email}
+        setContent={(value) => setContent({ ...content, email: value })}
+        error={error.email}
+        type="email"
+        required={true}
+      />
+    </Form>
+  );
+}
+```
+
+## Next Steps
+
+<Steps>
+  <Step title="Installation">
+    Set up your `.npmrc` file and install the packages you need
+  </Step>
+  <Step title="Quick Start">
+    Follow our quick start guide to build your first component
+  </Step>
+  <Step title="Explore Components">
+    Browse the component documentation to discover all available features
+  </Step>
+</Steps>
+
+<Note>
+  All packages are hosted on GitHub Packages. You'll need to configure your `.npmrc` file to access them. See the [Installation](/installation) guide for details.
+</Note>

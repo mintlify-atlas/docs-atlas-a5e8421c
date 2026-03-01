@@ -1,0 +1,199 @@
+---
+title: "TextArea"
+description: "Multi-line text input with auto-resize and character counting"
+---
+
+## Overview
+
+The TextArea component provides a multi-line text input with optional auto-resize functionality and character counting.
+
+## Import
+
+```jsx
+import { TextArea } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { TextArea } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [messageContent, setMessageContent] = useState({
+    error: false,
+    message: '',
+    value: ''
+  });
+
+  return (
+    <TextArea
+      label="Message"
+      content={messageContent}
+      setContent={setMessageContent}
+      placeHolder="Enter your message"
+      rows={5}
+    />
+  );
+}
+```
+
+## With Character Limit
+
+```jsx
+const [descriptionContent, setDescriptionContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+return (
+  <TextArea
+    label="Description"
+    content={descriptionContent}
+    setContent={setDescriptionContent}
+    maxLength={500}
+    placeHolder="Describe your product (max 500 characters)"
+    rows={6}
+  />
+);
+```
+
+## Auto-Resize
+
+```jsx
+<TextArea
+  label="Comments"
+  content={commentContent}
+  setContent={setCommentContent}
+  resizable={true}
+  placeHolder="Your textarea will grow as you type"
+  rows={3}
+/>
+```
+
+## With Validation
+
+```jsx
+const [feedbackContent, setFeedbackContent] = useState({
+  error: false,
+  message: '',
+  value: ''
+});
+
+const validateFeedback = () => {
+  if (feedbackContent.value.length < 10) {
+    setFeedbackContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Feedback must be at least 10 characters'
+    }));
+    return false;
+  }
+  return true;
+};
+
+return (
+  <TextArea
+    label="Feedback"
+    content={feedbackContent}
+    setContent={setFeedbackContent}
+    placeHolder="Share your thoughts"
+    rows={4}
+  />
+);
+```
+
+## Read-Only Mode
+
+```jsx
+<TextArea
+  label="Preview"
+  content={previewContent}
+  setContent={setPreviewContent}
+  readOnly={true}
+  rows={8}
+/>
+```
+
+## Props
+
+<ParamField path="content" type="TextAreaContent" required>
+  State object containing `error`, `message`, and `value` (string) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<TextAreaContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the textarea
+</ParamField>
+
+<ParamField path="placeHolder" type="string">
+  Placeholder text shown when textarea is empty
+</ParamField>
+
+<ParamField path="rows" type="number">
+  Initial number of visible text rows
+</ParamField>
+
+<ParamField path="maxLength" type="number">
+  Maximum character count. Shows a character counter when set
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the textarea in grid units
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the textarea
+</ParamField>
+
+<ParamField path="readOnly" type="boolean" default="false">
+  Makes the textarea read-only
+</ParamField>
+
+<ParamField path="resizable" type="boolean" default="false">
+  Automatically adjusts height based on content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="tagline" type="React.ReactNode">
+  Helper text displayed below the label
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface TextAreaContent extends InputContent {
+  value: string;
+}
+
+interface TextAreaProps {
+  label?: string;
+  content: TextAreaContent;
+  setContent: React.Dispatch<React.SetStateAction<TextAreaContent>>;
+  maxLength?: number;
+  size?: number;
+  tagline?: React.ReactNode;
+  readOnly?: boolean;
+  placeHolder?: string;
+  disabled?: boolean;
+  rows?: number;
+  className?: string;
+  resizable?: boolean;
+  dataIsLoading?: boolean;
+}
+```
+
+<Tip>
+  Enable `resizable` for a better user experience with dynamic content. The textarea will automatically grow as the user types.
+</Tip>

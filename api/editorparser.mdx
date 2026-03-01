@@ -1,0 +1,111 @@
+---
+title: '@jeremiemeunier/editorparser'
+description: 'Parser component for rendering structured editor content'
+icon: 'file-code'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/editorparser
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Components
+
+### EditorParser
+
+A component for parsing and rendering structured editor content with rich formatting.
+
+## Type Definitions
+
+```typescript
+interface EditorInterface {
+  content: EditorBlockCardInterface[];
+  title: string;
+  enc_title: string;
+  resume: string;
+  author: string;
+  color?: string;
+}
+
+interface EditorBlockInterface {
+  class?: string[];
+  elements: EditorBlockElementInterface[];
+}
+
+interface EditorBlockElementInterface {
+  type: string;
+  content: string | EditorBlockCardInterface[];
+  class?: string[];
+  author?: string;
+}
+
+interface EditorBlockCardInterface {
+  media: string;
+  content: EditorBlockElementInterface[];
+}
+```
+
+**Properties:**
+
+- `EditorInterface`: Main editor data structure
+  - `content`: Array of block cards
+  - `title`: Document title
+  - `enc_title`: Encoded title
+  - `resume`: Document summary
+  - `author`: Author name
+  - `color`: Optional theme color
+
+- `EditorBlockCardInterface`: Individual content blocks
+  - `media`: Media URL or identifier
+  - `content`: Array of block elements
+
+- `EditorBlockElementInterface`: Individual elements within blocks
+  - `type`: Element type (text, image, etc.)
+  - `content`: Element content (string or nested cards)
+  - `class`: Optional CSS classes
+  - `author`: Optional author attribution
+
+**Usage:**
+
+```tsx
+import { EditorParser } from '@jeremiemeunier/editorparser';
+
+const editorData = {
+  title: "My Article",
+  enc_title: "my-article",
+  resume: "Article summary",
+  author: "John Doe",
+  content: [
+    {
+      media: "image.jpg",
+      content: [
+        {
+          type: "paragraph",
+          content: "This is a paragraph"
+        }
+      ]
+    }
+  ]
+};
+
+<EditorParser data={editorData} />
+```
+
+## Dependencies
+
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+
+## Exports
+
+```typescript
+export * from "./components";
+```

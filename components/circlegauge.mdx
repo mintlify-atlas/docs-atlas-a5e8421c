@@ -1,0 +1,309 @@
+---
+title: 'CircleGauge'
+description: 'A circular progress gauge component for visualizing completion percentages'
+icon: 'chart-pie'
+---
+
+## Overview
+
+The `CircleGauge` component displays progress as a circular gauge, perfect for showing completion percentages, loading progress, or any metric from 0-100%. The component uses SVG for crisp rendering at any size and automatically animates progress changes.
+
+## Installation
+
+First, configure your `.npmrc` file to point to the GitHub registry:
+
+```npmrc
+@jeremiemeunier:registry=https://npm.pkg.github.com
+```
+
+Then install the core package:
+
+```bash
+npm install @jeremiemeunier/core
+```
+
+## Import
+
+```tsx
+import { CircleGauge } from '@jeremiemeunier/core';
+```
+
+## Props
+
+<ParamField path="progress" type="number" required>
+  The progress value to display, ranging from 0 to 100.
+  
+  - `0` = No progress (empty circle)
+  - `100` = Complete (full circle)
+  - Values in between show proportional progress
+</ParamField>
+
+## Usage
+
+<CodeGroup>
+
+```tsx Basic Usage
+import { CircleGauge } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <CircleGauge progress={75} />
+    </div>
+  );
+}
+```
+
+```tsx Dynamic Progress
+import { CircleGauge } from '@jeremiemeunier/core';
+import { useState } from 'react';
+
+function App() {
+  const [progress, setProgress] = useState(0);
+
+  return (
+    <div>
+      <CircleGauge progress={progress} />
+      <button onClick={() => setProgress(prev => Math.min(100, prev + 10))}>
+        Increase Progress
+      </button>
+    </div>
+  );
+}
+```
+
+```tsx Complete Circle
+import { CircleGauge } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <CircleGauge progress={100} />
+    </div>
+  );
+}
+```
+
+```tsx Empty State
+import { CircleGauge } from '@jeremiemeunier/core';
+
+function App() {
+  return (
+    <div>
+      <CircleGauge progress={0} />
+    </div>
+  );
+}
+```
+
+</CodeGroup>
+
+## Examples
+
+### Progress Tracker with Label
+
+```tsx
+import { CircleGauge } from '@jeremiemeunier/core';
+import { useState } from 'react';
+
+function ProgressTracker() {
+  const [progress, setProgress] = useState(45);
+
+  return (
+    <div style={{ position: 'relative', width: '120px' }}>
+      <CircleGauge progress={progress} />
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        fontSize: '24px',
+        fontWeight: 'bold'
+      }}>
+        {progress}%
+      </div>
+    </div>
+  );
+}
+```
+
+### File Upload Progress
+
+```tsx
+import { CircleGauge } from '@jeremiemeunier/core';
+import { useState, useEffect } from 'react';
+
+function FileUploadProgress() {
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  useEffect(() => {
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div>
+      <h3>Uploading file...</h3>
+      <CircleGauge progress={uploadProgress} />
+      <p>{uploadProgress}% complete</p>
+    </div>
+  );
+}
+```
+
+### Task Completion Dashboard
+
+```tsx
+import { CircleGauge } from '@jeremiemeunier/core';
+
+function TaskDashboard() {
+  const tasks = [
+    { name: 'Design', completed: 8, total: 10 },
+    { name: 'Development', completed: 15, total: 20 },
+    { name: 'Testing', completed: 5, total: 5 },
+  ];
+
+  return (
+    <div style={{ display: 'flex', gap: '20px' }}>
+      {tasks.map(task => {
+        const progress = (task.completed / task.total) * 100;
+        return (
+          <div key={task.name} style={{ textAlign: 'center' }}>
+            <CircleGauge progress={progress} />
+            <h4>{task.name}</h4>
+            <p>{task.completed}/{task.total} tasks</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+### Multiple Progress Indicators
+
+```tsx
+import { CircleGauge } from '@jeremiemeunier/core';
+
+function SkillsDisplay() {
+  const skills = [
+    { name: 'React', level: 90 },
+    { name: 'TypeScript', level: 85 },
+    { name: 'Node.js', level: 75 },
+    { name: 'GraphQL', level: 60 },
+  ];
+
+  return (
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(2, 1fr)', 
+      gap: '30px' 
+    }}>
+      {skills.map(skill => (
+        <div key={skill.name} style={{ textAlign: 'center' }}>
+          <div style={{ position: 'relative', width: '120px', margin: '0 auto' }}>
+            <CircleGauge progress={skill.level} />
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
+            }}>
+              {skill.level}%
+            </div>
+          </div>
+          <p>{skill.name}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Implementation Details
+
+The CircleGauge component:
+- Renders an SVG with a 120x120 viewBox
+- Contains two circles with radius 50, centered at (60, 60)
+- Background circle: Shows the unfilled portion
+- Gauge circle: Animated to show progress
+- Uses `strokeDasharray` and `strokeDashoffset` for the progress animation
+- Automatically recalculates the offset when progress changes
+
+### Progress Calculation
+
+The component calculates the stroke offset using:
+```typescript
+const circumference = 2 * Math.PI * 50; // 2πr = 314.159...
+const offset = circumference * (1 - progress / 100);
+```
+
+<Note>
+  The gauge automatically updates with smooth transitions when the progress prop changes, thanks to the useEffect hook that recalculates the stroke offset.
+</Note>
+
+## Styling
+
+The component uses CSS classes for styling:
+- `circle-progress-root` - The root SVG element
+- `circle-progress-background` - The background circle
+- `circle-progress-gauge` - The progress indicator circle
+
+You can customize the appearance by targeting these classes in your CSS:
+
+```css
+.circle-progress-background {
+  stroke: #e5e7eb;
+  fill: none;
+  stroke-width: 10;
+}
+
+.circle-progress-gauge {
+  stroke: #3b82f6;
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}
+```
+
+## Accessibility
+
+Consider adding ARIA attributes for better accessibility:
+
+```tsx
+<div role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+  <CircleGauge progress={progress} />
+  <span className="sr-only">{progress}% complete</span>
+</div>
+```
+
+## TypeScript
+
+The component is fully typed with TypeScript. The prop interface is:
+
+```typescript
+interface CircleGaugeTypes {
+  progress: number;
+}
+```
+
+<Note>
+  While the type accepts any number, it's recommended to keep values between 0 and 100 for proper visual representation.
+</Note>
+
+## Source
+
+View the source code:
+- Component: `source/core/src/components/circlegauge/CircleGauge.tsx`
+- Types: `source/core/src/components/circlegauge/CircleGauge.types.ts`

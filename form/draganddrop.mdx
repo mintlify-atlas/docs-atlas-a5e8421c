@@ -1,0 +1,257 @@
+---
+title: "DragAndDrop"
+description: "Drag and drop file upload with multiple file support"
+---
+
+## Overview
+
+The DragAndDrop component provides an intuitive drag-and-drop interface for uploading multiple files with file type validation.
+
+## Import
+
+```jsx
+import { DragAndDrop } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { DragAndDrop } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [filesContent, setFilesContent] = useState({
+    error: false,
+    message: '',
+    value: null
+  });
+
+  return (
+    <DragAndDrop
+      label="Upload Files"
+      content={filesContent}
+      setContent={setFilesContent}
+      authorizedFiles={['jpg', 'png', 'pdf']}
+    />
+  );
+}
+```
+
+## Image Upload
+
+```jsx
+const [imagesContent, setImagesContent] = useState({
+  error: false,
+  message: '',
+  value: null
+});
+
+return (
+  <DragAndDrop
+    label="Product Images"
+    content={imagesContent}
+    setContent={setImagesContent}
+    authorizedFiles={['jpg', 'jpeg', 'png', 'gif', 'webp']}
+  />
+);
+```
+
+## Document Upload
+
+```jsx
+const [documentsContent, setDocumentsContent] = useState({
+  error: false,
+  message: '',
+  value: null
+});
+
+return (
+  <DragAndDrop
+    label="Supporting Documents"
+    content={documentsContent}
+    setContent={setDocumentsContent}
+    authorizedFiles={['pdf', 'doc', 'docx', 'xls', 'xlsx']}
+  />
+);
+```
+
+## With Validation
+
+```jsx
+const [uploadContent, setUploadContent] = useState({
+  error: false,
+  message: '',
+  value: null
+});
+
+const handleUpload = async () => {
+  if (!uploadContent.value || uploadContent.value.length === 0) {
+    setUploadContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Please select at least one file'
+    }));
+    return;
+  }
+
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  const files = Array.from(uploadContent.value);
+  const oversizedFiles = files.filter(file => file.size > maxSize);
+
+  if (oversizedFiles.length > 0) {
+    setUploadContent(prev => ({
+      ...prev,
+      error: true,
+      message: `Files must be smaller than 10MB: ${oversizedFiles.map(f => f.name).join(', ')}`
+    }));
+    return;
+  }
+
+  // Upload files
+  const formData = new FormData();
+  files.forEach(file => formData.append('files', file));
+  
+  await fetch('/api/upload', {
+    method: 'POST',
+    body: formData
+  });
+};
+
+return (
+  <>
+    <DragAndDrop
+      label="Upload Files"
+      content={uploadContent}
+      setContent={setUploadContent}
+      authorizedFiles={['jpg', 'png', 'pdf']}
+    />
+    <button onClick={handleUpload}>Upload</button>
+  </>
+);
+```
+
+## Processing Uploaded Files
+
+```jsx
+const [filesContent, setFilesContent] = useState({
+  error: false,
+  message: '',
+  value: null
+});
+
+const processFiles = () => {
+  if (filesContent.value) {
+    const files = Array.from(filesContent.value);
+    console.log(`Uploaded ${files.length} file(s)`);
+    
+    files.forEach(file => {
+      console.log(`- ${file.name} (${file.size} bytes, ${file.type})`);
+    });
+  }
+};
+
+return (
+  <>
+    <DragAndDrop
+      label="Files"
+      content={filesContent}
+      setContent={setFilesContent}
+      authorizedFiles={['jpg', 'png', 'pdf']}
+    />
+    <button onClick={processFiles}>Process Files</button>
+  </>
+);
+```
+
+## Props
+
+<ParamField path="content" type="DragAndDropContent" required>
+  State object containing `error`, `message`, and `value` (FileList | null) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<DragAndDropContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="authorizedFiles" type="string[]" required>
+  Array of allowed file extensions (without dots, e.g., ['jpg', 'pdf'])
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the drop zone
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the component in grid units
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface DragAndDropContent extends InputContent {
+  value: FileList | null;
+}
+
+interface DragAndDropProps {
+  size?: number;
+  label?: string;
+  content: DragAndDropContent;
+  setContent: React.Dispatch<React.SetStateAction<DragAndDropContent>>;
+  authorizedFiles: string[];
+  className?: string;
+  dataIsLoading?: boolean;
+}
+```
+
+## Common File Types
+
+File extensions for the `authorizedFiles` prop:
+
+### Images
+- `['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']`
+
+### Documents
+- `['pdf', 'doc', 'docx', 'txt', 'rtf']`
+
+### Spreadsheets
+- `['xls', 'xlsx', 'csv']`
+
+### Archives
+- `['zip', 'rar', '7z', 'tar', 'gz']`
+
+### Media
+- `['mp4', 'mov', 'avi', 'mp3', 'wav']`
+
+## Working with FileList
+
+The component stores files as a `FileList` object. Convert to an array to work with the files:
+
+```jsx
+const files = Array.from(filesContent.value || []);
+
+// Get file names
+const fileNames = files.map(file => file.name);
+
+// Get total size
+const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+
+// Create FormData for upload
+const formData = new FormData();
+files.forEach(file => formData.append('files', file));
+```
+
+<Note>
+  The text in the drop zone is currently in French. It displays allowed file types and shows the number of selected files.
+</Note>
+
+<Tip>
+  Always validate file types and sizes on the server side. Client-side validation improves UX but can be bypassed.
+</Tip>

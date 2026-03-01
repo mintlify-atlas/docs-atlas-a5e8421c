@@ -1,0 +1,110 @@
+---
+title: Carousel
+description: A React carousel component for displaying slides with automatic pagination and smooth navigation.
+---
+
+## Overview
+
+The Carousel component allows you to display multiple slides with automatic pagination and navigation controls. It supports configurable visible slides and smooth scrolling between pages.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/carousel
+```
+
+## Basic Usage
+
+```tsx
+import { Carousel } from "@jeremiemeunier/carousel";
+
+const slides = [
+  <div>Slide 1</div>,
+  <div>Slide 2</div>,
+  <div>Slide 3</div>,
+  <div>Slide 4</div>,
+  <div>Slide 5</div>,
+  <div>Slide 6</div>
+];
+
+export default function App() {
+  return <Carousel slides={slides} slidesNumber={2} />;
+}
+```
+
+## Props
+
+<ParamField path="slides" type="React.ReactNode[]" required>
+  Array of React elements to display as carousel slides.
+</ParamField>
+
+<ParamField path="slidesNumber" type="number" default="4">
+  Number of slides visible simultaneously in the carousel viewport.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply to the carousel container.
+</ParamField>
+
+## Features
+
+- Automatic pagination calculation based on slide count
+- Smooth scroll animation between pages
+- Navigation buttons with disabled states at boundaries
+- Responsive slide layout
+- Accessible navigation controls
+
+## Examples
+
+### Two Slides per Page
+
+```tsx
+import { Carousel } from "@jeremiemeunier/carousel";
+
+const products = [
+  <ProductCard name="Product 1" />,
+  <ProductCard name="Product 2" />,
+  <ProductCard name="Product 3" />,
+  <ProductCard name="Product 4" />
+];
+
+export default function ProductCarousel() {
+  return (
+    <Carousel 
+      slides={products} 
+      slidesNumber={2}
+      className="product-carousel"
+    />
+  );
+}
+```
+
+### Custom Slide Content
+
+```tsx
+import { Carousel } from "@jeremiemeunier/carousel";
+
+const testimonials = [
+  <div className="testimonial">
+    <p>"Great product!"</p>
+    <cite>- Customer 1</cite>
+  </div>,
+  <div className="testimonial">
+    <p>"Highly recommend."</p>
+    <cite>- Customer 2</cite>
+  </div>
+];
+
+export default function Testimonials() {
+  return <Carousel slides={testimonials} slidesNumber={1} />;
+}
+```
+
+## Implementation Details
+
+The carousel automatically:
+- Calculates the number of pages based on total slides and visible slides
+- Disables the previous button on the first page
+- Disables the next button on the last page
+- Scrolls to the appropriate slide position when navigation buttons are clicked
+- Uses smooth scrolling behavior for better UX

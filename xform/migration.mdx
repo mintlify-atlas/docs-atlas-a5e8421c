@@ -1,0 +1,486 @@
+---
+title: Migration Guide
+description: Migrate from @jeremiemeunier/form to @jeremiemeunier/x-form
+---
+
+## Overview
+
+This guide will help you migrate from the stateful `@jeremiemeunier/form` package to the FormData-based `@jeremiemeunier/x-form` package. The migration involves replacing controlled components with uncontrolled components and changing how you handle form submissions.
+
+## Key Differences
+
+| Feature | @jeremiemeunier/form | @jeremiemeunier/x-form |
+|---------|---------------------|------------------------|
+| State Management | Controlled (useState) | Uncontrolled (defaultValue) |
+| Data Access | Component state | FormData API |
+| File Uploads | Requires extra handling | Native support |
+| Re-renders | On every keystroke | Minimal |
+| Validation | Manual state updates | Native HTML5 + custom |
+| Form Encoding | application/json | multipart/form-data |
+
+## Installation Changes
+
+### Before
+```bash
+npm install @jeremiemeunier/core @jeremiemeunier/form
+```
+
+### After
+```bash
+npm install @jeremiemeunier/core @jeremiemeunier/x-form
+```
+
+## Import Changes
+
+### Before
+```tsx
+import { Form, Input, TextArea, Submit } from "@jeremiemeunier/form";
+```
+
+### After
+```tsx
+import { XForm, XInput, XTextArea, XSubmit } from "@jeremiemeunier/x-form";
+```
+
+## Component Migration
+
+### Input Component
+
+#### Before (Stateful)
+```tsx
+const [email, setEmail] = useState({
+  value: "",
+  error: false,
+  message: ""
+});
+
+<Input
+  name="email"
+  label="Email Address"
+  type="email"
+  content={email}
+  setContent={setEmail}
+  placeholder="you@example.com"
+  required
+/>
+```
+
+#### After (FormData)
+```tsx
+<XInput
+  name="email"
+  label="Email Address"
+  type="email"
+  placeholder="you@example.com"
+  defaultValue=""
+  required
+/>
+```
+
+### TextArea Component
+
+#### Before (Stateful)
+```tsx
+const [message, setMessage] = useState({
+  value: "",
+  error: false,
+  message: ""
+});
+
+<TextArea
+  name="message"
+  label="Message"
+  content={message}
+  setContent={setMessage}
+  rows={5}
+  required
+/>
+```
+
+#### After (FormData)
+```tsx
+<XTextArea
+  name="message"
+  label="Message"
+  rows={5}
+  defaultValue=""
+  required
+/>
+```
+
+### Select Component
+
+#### Before (Stateful)
+```tsx
+const [country, setCountry] = useState({
+  value: "",
+  error: false,
+  message: ""
+});
+
+<Select
+  name="country"
+  label="Country"
+  content={country}
+  setContent={setCountry}
+  required
+>
+  <option value="">Select a country</option>
+  <option value="US">United States</option>
+  <option value="FR">France</option>
+</Select>
+```
+
+#### After (FormData)
+```tsx
+<XSelect
+  name="country"
+  label="Country"
+  defaultValue=""
+  required
+>
+  <option value="">Select a country</option>
+  <option value="US">United States</option>
+  <option value="FR">France</option>
+</XSelect>
+```
+
+### Checkbox Component
+
+#### Before (Stateful)
+```tsx
+const [terms, setTerms] = useState({
+  value: false,
+  error: false,
+  message: ""
+});
+
+<Checkbox
+  name="terms"
+  content={terms}
+  setContent={setTerms}
+  required
+>
+  I agree to the terms
+</Checkbox>
+```
+
+#### After (FormData)
+```tsx
+<XCheckbox
+  name="terms"
+  value="accepted"
+  defaultChecked={false}
+  required
+>
+  I agree to the terms
+</XCheckbox>
+```
+
+### Radio Component
+
+#### Before (Stateful)
+```tsx
+const [plan, setPlan] = useState({
+  value: "free",
+  error: false,
+  message: ""
+});
+
+<Radio
+  name="plan"
+  label="Select Plan"
+  content={plan}
+  setContent={setPlan}
+  options={[
+    { value: "free", label: "Free" },
+    { value: "pro", label: "Pro" },
+  ]}
+  required
+/>
+```
+
+#### After (FormData)
+```tsx
+<XRadio
+  name="plan"
+  label="Select Plan"
+  defaultValue="free"
+  options={[
+    { value: "free", label: "Free" },
+    { value: "pro", label: "Pro" },
+  ]}
+  required
+/>
+```
+
+## Form Submission Changes
+
+### Before (Stateful Approach)
+```tsx
+function ContactForm() {
+  const [name, setName] = useState({ value: "", error: false, message: "" });
+  const [email, setEmail] = useState({ value: "", error: false, message: "" });
+  const [message, setMessage] = useState({ value: "", error: false, message: "" });
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    
+    // Validate
+    if (!name.value) {
+      setName({ ...name, error: true, message: "Name is required" });
+      return;
+    }
+    
+    // Access data from state
+    const data = {
+      name: name.value,
+      email: email.value,
+      message: message.value,
+    };
+    
+    // Send to API
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Input name="name" label="Name" content={name} setContent={setName} required />
+      <Input name="email" label="Email" content={email} setContent={setEmail} required />
+      <TextArea name="message" label="Message" content={message} setContent={setMessage} required />
+      <Submit label="Send" />
+    </Form>
+  );
+}
+```
+
+### After (FormData Approach)
+```tsx
+function ContactForm() {
+  const handleSubmit = (formData: FormData) => {
+    // No event.preventDefault() needed - XForm handles it
+    // No validation needed - HTML5 validation handles required fields
+    
+    // Access data from FormData
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message"),
+    };
+    
+    // Send to API (can send FormData directly)
+    fetch("/api/contact", {
+      method: "POST",
+      body: formData, // Automatically sets correct headers
+    });
+  };
+
+  return (
+    <XForm onSubmit={handleSubmit}>
+      <XInput name="name" label="Name" required />
+      <XInput name="email" label="Email" type="email" required />
+      <XTextArea name="message" label="Message" required />
+      <XSubmit label="Send" />
+    </XForm>
+  );
+}
+```
+
+## File Upload Migration
+
+### Before (Stateful - Complex)
+```tsx
+const [file, setFile] = useState<File | null>(null);
+
+const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files[0]) {
+    setFile(e.target.files[0]);
+  }
+};
+
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  
+  const formData = new FormData();
+  if (file) {
+    formData.append("document", file);
+  }
+  formData.append("title", title.value);
+  
+  await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+<Form onSubmit={handleSubmit}>
+  <Input name="title" label="Title" content={title} setContent={setTitle} />
+  <input type="file" onChange={handleFileChange} />
+  <Submit label="Upload" />
+</Form>
+```
+
+### After (FormData - Simple)
+```tsx
+const handleSubmit = (formData: FormData) => {
+  // File is automatically included in FormData
+  const file = formData.get("document");
+  const title = formData.get("title");
+  
+  fetch("/api/upload", {
+    method: "POST",
+    body: formData, // Includes file with proper encoding
+  });
+};
+
+<XForm onSubmit={handleSubmit}>
+  <XInput name="title" label="Title" />
+  <XInput name="document" label="Upload Document" type="file" />
+  <XSubmit label="Upload" />
+</XForm>
+```
+
+## Error Handling Migration
+
+### Before (Manual State)
+```tsx
+const [email, setEmail] = useState({ value: "", error: false, message: "" });
+
+const handleSubmit = (e: FormEvent) => {
+  e.preventDefault();
+  
+  // Manual validation
+  if (!email.value.includes("@")) {
+    setEmail({
+      ...email,
+      error: true,
+      message: "Invalid email address"
+    });
+    return;
+  }
+  
+  // Submit...
+};
+
+<Input
+  name="email"
+  label="Email"
+  content={email}
+  setContent={setEmail}
+  required
+/>
+```
+
+### After (HTML5 + Custom)
+```tsx
+const handleSubmit = (formData: FormData) => {
+  // HTML5 validation happens automatically
+  // Custom validation if needed
+  const email = formData.get("email") as string;
+  
+  if (!email.includes("@")) {
+    alert("Invalid email"); // Or use your error handling
+    return;
+  }
+  
+  // Submit...
+};
+
+<XInput
+  name="email"
+  label="Email"
+  type="email" // HTML5 validation
+  required
+/>
+```
+
+## Advanced: Custom Validation
+
+If you need custom validation with error messages, you can combine XForm with state:
+
+```tsx
+function FormWithValidation() {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleSubmit = (formData: FormData) => {
+    const newErrors: Record<string, string> = {};
+    
+    // Custom validation
+    const age = Number(formData.get("age"));
+    if (age < 18) {
+      newErrors.age = "Must be 18 or older";
+    }
+    
+    const password = formData.get("password") as string;
+    if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    // Submit...
+    setErrors({});
+  };
+
+  return (
+    <XForm onSubmit={handleSubmit}>
+      <XInput
+        name="age"
+        label="Age"
+        type="number"
+        error={errors.age}
+        required
+      />
+      <XInput
+        name="password"
+        label="Password"
+        type="password"
+        error={errors.password}
+        required
+      />
+      <XSubmit label="Register" />
+    </XForm>
+  );
+}
+```
+
+## Migration Checklist
+
+- [ ] Install `@jeremiemeunier/x-form`
+- [ ] Update imports to use X-prefixed components
+- [ ] Remove all `useState` hooks for form fields
+- [ ] Replace `content` and `setContent` props with `defaultValue`
+- [ ] Replace `defaultChecked` for checkboxes instead of state
+- [ ] Update form submission handler to receive `FormData` instead of event
+- [ ] Remove manual `event.preventDefault()` calls
+- [ ] Update API calls to use FormData directly
+- [ ] Test file uploads (now much simpler)
+- [ ] Remove manual FormData construction code
+- [ ] Update validation logic if needed
+
+## When NOT to Migrate
+
+Consider staying with `@jeremiemeunier/form` if you need:
+
+- Real-time field validation with instant feedback
+- Complex form state dependencies (field A affects field B)
+- Dynamic form fields that add/remove based on user input
+- Live character counting or formatting as user types
+- Multi-step forms with state persistence between steps
+
+For these scenarios, the controlled component approach provides better developer experience.
+
+## Getting Help
+
+If you encounter issues during migration:
+
+1. Check the [component reference](/xform/components) for prop differences
+2. Review the [FormData API documentation](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+3. See the [overview page](/xform/overview) for more examples

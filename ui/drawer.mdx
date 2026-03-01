@@ -1,0 +1,270 @@
+---
+title: Drawer
+description: A sliding drawer panel controlled by React Context with the useDrawer hook.
+---
+
+## Overview
+
+The Drawer component provides a bottom-sliding panel that can display dynamic content. It uses React Context to manage state globally, making it easy to trigger the drawer from anywhere in your application.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/drawer
+```
+
+<Note>
+  This package requires `framer-motion` and `simplebar-react` as peer dependencies.
+</Note>
+
+## Basic Usage
+
+### 1. Wrap Your App with DrawerProvider
+
+```tsx
+import { DrawerProvider } from "@jeremiemeunier/drawer";
+
+export default function App() {
+  return (
+    <DrawerProvider>
+      {/* Your application components */}
+    </DrawerProvider>
+  );
+}
+```
+
+### 2. Use the useDrawer Hook
+
+```tsx
+import { useDrawer } from "@jeremiemeunier/drawer";
+
+function MyComponent() {
+  const { openDrawer, pushContent } = useDrawer();
+
+  const handleClick = () => {
+    pushContent(
+      <div>
+        <h2>Drawer Content</h2>
+        <p>This is the content of the drawer.</p>
+      </div>
+    );
+    openDrawer();
+  };
+
+  return <button onClick={handleClick}>Open Drawer</button>;
+}
+```
+
+## DrawerProvider
+
+The context provider that manages drawer state and content.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Your application components.
+</ParamField>
+
+## useDrawer Hook
+
+A hook that returns functions to control the drawer.
+
+### Return Values
+
+<ResponseField name="pushContent" type="(element: React.ReactNode) => void">
+  Sets the content to be displayed in the drawer.
+</ResponseField>
+
+<ResponseField name="openDrawer" type="() => void">
+  Opens the drawer.
+</ResponseField>
+
+<ResponseField name="closeDrawer" type="() => void">
+  Closes the drawer.
+</ResponseField>
+
+<ResponseField name="switchDrawer" type="() => void">
+  Toggles the drawer open/closed state.
+</ResponseField>
+
+## Examples
+
+### Simple Drawer
+
+```tsx
+import { DrawerProvider, useDrawer } from "@jeremiemeunier/drawer";
+
+function DrawerTrigger() {
+  const { openDrawer, pushContent } = useDrawer();
+
+  return (
+    <button
+      onClick={() => {
+        pushContent(
+          <div>
+            <h2>Welcome!</h2>
+            <p>This is a simple drawer.</p>
+          </div>
+        );
+        openDrawer();
+      }}
+    >
+      Open Drawer
+    </button>
+  );
+}
+
+export default function App() {
+  return (
+    <DrawerProvider>
+      <DrawerTrigger />
+    </DrawerProvider>
+  );
+}
+```
+
+### Drawer with Form
+
+```tsx
+import { DrawerProvider, useDrawer } from "@jeremiemeunier/drawer";
+
+function ContactForm() {
+  const { closeDrawer } = useDrawer();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission
+    closeDrawer();
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Contact Us</h2>
+      <input type="text" placeholder="Name" />
+      <input type="email" placeholder="Email" />
+      <textarea placeholder="Message" />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+function ContactButton() {
+  const { openDrawer, pushContent } = useDrawer();
+
+  return (
+    <button
+      onClick={() => {
+        pushContent(<ContactForm />);
+        openDrawer();
+      }}
+    >
+      Contact Us
+    </button>
+  );
+}
+
+export default function App() {
+  return (
+    <DrawerProvider>
+      <ContactButton />
+    </DrawerProvider>
+  );
+}
+```
+
+### Dynamic Drawer Content
+
+```tsx
+import { DrawerProvider, useDrawer } from "@jeremiemeunier/drawer";
+
+function ProductDetails({ product }: { product: any }) {
+  return (
+    <div>
+      <h2>{product.name}</h2>
+      <p>{product.description}</p>
+      <p>Price: ${product.price}</p>
+    </div>
+  );
+}
+
+function ProductList() {
+  const { openDrawer, pushContent } = useDrawer();
+
+  const products = [
+    { id: 1, name: "Product 1", description: "Description 1", price: 29.99 },
+    { id: 2, name: "Product 2", description: "Description 2", price: 39.99 },
+  ];
+
+  const showProductDetails = (product: any) => {
+    pushContent(<ProductDetails product={product} />);
+    openDrawer();
+  };
+
+  return (
+    <div>
+      {products.map((product) => (
+        <div key={product.id}>
+          <h3>{product.name}</h3>
+          <button onClick={() => showProductDetails(product)}>
+            View Details
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <DrawerProvider>
+      <ProductList />
+    </DrawerProvider>
+  );
+}
+```
+
+### Toggle Drawer
+
+```tsx
+import { useDrawer } from "@jeremiemeunier/drawer";
+
+function ToggleButton() {
+  const { switchDrawer, pushContent } = useDrawer();
+
+  // Set content once
+  React.useEffect(() => {
+    pushContent(
+      <div>
+        <h2>Toggle Menu</h2>
+        <p>This drawer can be toggled open and closed.</p>
+      </div>
+    );
+  }, [pushContent]);
+
+  return <button onClick={switchDrawer}>Toggle Drawer</button>;
+}
+```
+
+## Features
+
+- Bottom-sliding panel with smooth animations
+- Click outside to close
+- Scrollable content area (max-height: 60vh)
+- Global state management via Context
+- Dynamic content updates
+- Simple API with intuitive hook
+
+## Styling
+
+The drawer comes with built-in styles but can be customized. The drawer container has:
+- Maximum height of 60vh
+- Smooth slide-up animation
+- Background overlay with backdrop blur
+- Scrollable content using SimpleBar
+
+## Implementation Details
+
+The drawer:
+- Slides up from the bottom with a 40px initial offset
+- Uses Framer Motion's AnimatePresence for smooth enter/exit animations
+- Automatically manages scroll behavior with SimpleBar
+- Closes when clicking the background overlay
+- Maintains content in a ref to avoid unnecessary re-renders

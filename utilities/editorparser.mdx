@@ -1,0 +1,202 @@
+---
+title: EditorParser
+description: Parse and render JSON content blocks as HTML elements
+---
+
+## Overview
+
+EditorParser is a React component that converts JSON-structured content into HTML elements. It transforms an array of content blocks (headings, paragraphs, images, quotes) into rendered markup, making it ideal for displaying content from headless CMS systems or JSON-based editors.
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/editorparser
+```
+
+Add the following to your `.npmrc` file:
+
+```npmrc
+@jeremiemeunier:registry=https://npm.pkg.github.com
+```
+
+## Basic Usage
+
+```tsx
+import { EditorParser } from "@jeremiemeunier/editorparser";
+
+const data = [
+  { type: "h2", content: "Article Title" },
+  { type: "p", content: "First paragraph of content" },
+  { type: "img", content: "/image.jpg" },
+  { type: "cit", content: "A wise quote", author: "Famous Person" },
+];
+
+const Article = () => <EditorParser bson={data} />;
+```
+
+## Props
+
+### EditorParser
+
+<ParamField path="bson" type="EditorBlockElementInterface | EditorBlockElementInterface[]" required>
+  Content to parse and render. Can be a single element or an array of elements.
+</ParamField>
+
+## Interfaces
+
+### EditorBlockElementInterface
+
+Defines the structure of a content block element:
+
+```typescript
+interface EditorBlockElementInterface {
+  type: string;
+  content: string | EditorBlockCardInterface[];
+  class?: string[];
+  author?: string;
+}
+```
+
+<ResponseField name="type" type="string" required>
+  The type of element to render. Supported types:
+  - `h2`, `h3`, `h4`, `h5`, `h6` - Heading elements
+  - `p` - Paragraph (default)
+  - `img` - Image element
+  - `cit` - Blockquote/citation
+</ResponseField>
+
+<ResponseField name="content" type="string | EditorBlockCardInterface[]" required>
+  The content to display. For text elements, this is a string. For complex elements, it can be an array of card interfaces.
+</ResponseField>
+
+<ResponseField name="class" type="string[]">
+  Optional CSS classes to apply to the element.
+</ResponseField>
+
+<ResponseField name="author" type="string">
+  Optional author attribution. Used with `cit` type to display quote attribution.
+</ResponseField>
+
+### EditorBlockCardInterface
+
+```typescript
+interface EditorBlockCardInterface {
+  media: string;
+  content: EditorBlockElementInterface[];
+}
+```
+
+<ResponseField name="media" type="string" required>
+  Media URL or path for the card.
+</ResponseField>
+
+<ResponseField name="content" type="EditorBlockElementInterface[]" required>
+  Array of content elements within the card.
+</ResponseField>
+
+## Supported Element Types
+
+### Headings (h2-h6)
+
+Renders heading elements with the `windmillui text` class:
+
+```tsx
+{ type: "h2", content: "Main Heading" }
+{ type: "h3", content: "Subheading" }
+```
+
+### Paragraph (p)
+
+Default element type for text content:
+
+```tsx
+{ type: "p", content: "This is a paragraph." }
+```
+
+### Image (img)
+
+Renders an image element:
+
+```tsx
+{ type: "img", content: "/path/to/image.jpg" }
+```
+
+### Citation (cit)
+
+Renders a blockquote with optional author attribution:
+
+```tsx
+{ type: "cit", content: "This is a quote", author: "John Doe" }
+```
+
+Output:
+```html
+<blockquote>
+  <p>This is a quote</p>
+  <p class="author">John Doe</p>
+</blockquote>
+```
+
+## Custom Classes
+
+Add custom CSS classes to any element:
+
+```tsx
+{
+  type: "p",
+  content: "Highlighted text",
+  class: ["highlight", "bold"]
+}
+```
+
+Rendered output:
+```html
+<p class="windmillui text highlight bold">Highlighted text</p>
+```
+
+## Examples
+
+### Single Element
+
+```tsx
+const singleElement = {
+  type: "h2",
+  content: "Welcome"
+};
+
+<EditorParser bson={singleElement} />
+```
+
+### Multiple Elements
+
+```tsx
+const article = [
+  { type: "h2", content: "Introduction" },
+  { type: "p", content: "This article discusses..." },
+  { type: "img", content: "/hero.jpg" },
+  { type: "h3", content: "Key Points" },
+  { type: "p", content: "First important point..." },
+  { type: "cit", content: "Remember this", author: "Expert" },
+];
+
+<EditorParser bson={article} />
+```
+
+### With Custom Classes
+
+```tsx
+const styledContent = [
+  { 
+    type: "h2", 
+    content: "Styled Heading",
+    class: ["large", "primary-color"]
+  },
+  { 
+    type: "p", 
+    content: "Custom paragraph",
+    class: ["intro"]
+  },
+];
+
+<EditorParser bson={styledContent} />
+```

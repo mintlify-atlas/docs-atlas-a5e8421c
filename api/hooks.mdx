@@ -1,0 +1,139 @@
+---
+title: '@jeremiemeunier/hooks'
+description: 'Utility hooks for common React patterns'
+icon: 'hook'
+---
+
+## Installation
+
+```bash
+npm install @jeremiemeunier/hooks
+```
+
+## Package Information
+
+- **Version**: 1.4.7
+- **License**: ISC
+- **Repository**: [github.com/jeremiemeunier/windmill-components](https://github.com/jeremiemeunier/windmill-components)
+
+## Hooks
+
+### useRefresh
+
+A hook for refreshing React Query queries by key.
+
+**Returns:**
+
+```typescript
+{
+  refreshing: (key: string[]) => boolean;
+}
+```
+
+**Parameters:**
+
+- `key`: Array of query key strings to invalidate and refetch
+
+**Usage:**
+
+```tsx
+import { useRefresh } from '@jeremiemeunier/hooks';
+import { useQuery } from '@tanstack/react-query';
+
+function MyComponent() {
+  const { refreshing } = useRefresh();
+  
+  const { data } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers
+  });
+
+  const handleRefresh = () => {
+    refreshing(['users']);
+  };
+
+  return (
+    <div>
+      <button onClick={handleRefresh}>Refresh</button>
+      {/* Display data */}
+    </div>
+  );
+}
+```
+
+**Implementation Details:**
+
+- Invalidates all queries matching the provided keys
+- Refetches active queries automatically
+- Uses React Query's `invalidateQueries` and `refetchQueries`
+- Returns `true` when refresh is complete
+
+### useSeo
+
+A hook for managing SEO metadata in your application.
+
+**Props:**
+
+```typescript
+interface SeoProps {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  color?: string;
+  type?: "website";
+  image?: string;
+}
+```
+
+**Parameters:**
+
+- `title` (optional): Page title for SEO
+- `description` (optional): Meta description
+- `keywords` (optional): Meta keywords
+- `color` (optional): Theme color
+- `type` (optional): Open Graph type (defaults to "website")
+- `image` (optional): Social media preview image URL
+
+**Usage:**
+
+```tsx
+import { useSeo } from '@jeremiemeunier/hooks';
+
+function ProductPage() {
+  useSeo({
+    title: "Product Name - My Store",
+    description: "Product description for SEO",
+    keywords: "product, store, buy",
+    image: "https://example.com/product-image.jpg",
+    type: "website"
+  });
+
+  return (
+    <div>
+      {/* Product content */}
+    </div>
+  );
+}
+```
+
+**Features:**
+
+- Sets document title
+- Manages meta tags for SEO
+- Configures Open Graph metadata
+- Sets theme color for mobile browsers
+- Handles social media preview images
+
+## Dependencies
+
+- **@tanstack/react-query**: ^5.85.5
+- **react**: ^19.1.1
+- **react-dom**: ^19.1.1
+- **react-router-dom**: ^7.12.0
+- **simplebar-react**: ^3.3.2
+
+## Exports
+
+```typescript
+export * from "./hooks";
+```

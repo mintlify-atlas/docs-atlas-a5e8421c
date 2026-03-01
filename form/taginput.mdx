@@ -1,0 +1,234 @@
+---
+title: "TagInput"
+description: "Multi-value input for creating tag collections"
+---
+
+## Overview
+
+The TagInput component allows users to enter multiple values as tags, perfect for categories, keywords, or multiple selections.
+
+## Import
+
+```jsx
+import { TagInput } from '@jeremiemeunier/form';
+```
+
+## Basic Usage
+
+```jsx
+import { TagInput } from '@jeremiemeunier/form';
+import { useState } from 'react';
+
+function MyForm() {
+  const [tagsContent, setTagsContent] = useState({
+    error: false,
+    message: '',
+    value: []
+  });
+
+  return (
+    <TagInput
+      label="Tags"
+      content={tagsContent}
+      setContent={setTagsContent}
+      placeHolder="Type and press comma to add tags"
+    />
+  );
+}
+```
+
+## Custom Separator
+
+```jsx
+const [emailsContent, setEmailsContent] = useState({
+  error: false,
+  message: '',
+  value: []
+});
+
+return (
+  <TagInput
+    label="Email Recipients"
+    content={emailsContent}
+    setContent={setEmailsContent}
+    separator={[',', ';', ' ']}
+    placeHolder="Enter emails separated by comma, semicolon, or space"
+  />
+);
+```
+
+## Keywords Example
+
+```jsx
+const [keywordsContent, setKeywordsContent] = useState({
+  error: false,
+  message: '',
+  value: []
+});
+
+return (
+  <TagInput
+    label="SEO Keywords"
+    content={keywordsContent}
+    setContent={setKeywordsContent}
+    placeHolder="Add keywords"
+    tagline="Press comma after each keyword"
+  />
+);
+```
+
+## With Validation
+
+```jsx
+const [categoriesContent, setCategoriesContent] = useState({
+  error: false,
+  message: '',
+  value: []
+});
+
+const handleSubmit = () => {
+  if (categoriesContent.value.length === 0) {
+    setCategoriesContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Please add at least one category'
+    }));
+    return;
+  }
+  if (categoriesContent.value.length > 5) {
+    setCategoriesContent(prev => ({
+      ...prev,
+      error: true,
+      message: 'Maximum 5 categories allowed'
+    }));
+    return;
+  }
+  // Process form
+};
+
+return (
+  <>
+    <TagInput
+      label="Categories"
+      content={categoriesContent}
+      setContent={setCategoriesContent}
+      placeHolder="Add up to 5 categories"
+      required
+    />
+    <button onClick={handleSubmit}>Submit</button>
+  </>
+);
+```
+
+## Pre-filled Tags
+
+```jsx
+const [skillsContent, setSkillsContent] = useState({
+  error: false,
+  message: '',
+  value: ['React', 'TypeScript', 'Node.js']
+});
+
+return (
+  <TagInput
+    label="Skills"
+    content={skillsContent}
+    setContent={setSkillsContent}
+    placeHolder="Add more skills"
+  />
+);
+```
+
+## Props
+
+<ParamField path="content" type="TagInputContent" required>
+  State object containing `error`, `message`, and `value` (string[]) properties
+</ParamField>
+
+<ParamField path="setContent" type="React.Dispatch<React.SetStateAction<TagInputContent>>" required>
+  State setter function for the content object
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the input
+</ParamField>
+
+<ParamField path="placeHolder" type="string">
+  Placeholder text shown when input is empty
+</ParamField>
+
+<ParamField path="separator" type="string[]" default="[',']">
+  Array of characters that trigger tag creation. Default is comma only
+</ParamField>
+
+<ParamField path="size" type="number">
+  Width of the input in grid units
+</ParamField>
+
+<ParamField path="required" type="boolean" default="false">
+  Marks the field as required
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the input
+</ParamField>
+
+<ParamField path="readOnly" type="boolean" default="false">
+  Makes the input read-only
+</ParamField>
+
+<ParamField path="autofocus" type="boolean" default="false">
+  Automatically focuses the input on mount
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name attribute for the input field
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes to apply to the tag container
+</ParamField>
+
+<ParamField path="tagline" type="React.ReactNode">
+  Helper text displayed below the label
+</ParamField>
+
+<ParamField path="dataIsLoading" type="boolean" default="false">
+  Shows a loading state indicator
+</ParamField>
+
+## Type Definition
+
+```typescript
+interface TagInputContent extends InputContent {
+  value: string[];
+}
+
+interface TagInputProps {
+  content: TagInputContent;
+  setContent: React.Dispatch<React.SetStateAction<TagInputContent>>;
+  separator?: string[];
+  label?: string;
+  size?: number;
+  readOnly?: boolean;
+  tagline?: React.ReactNode;
+  placeHolder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  name?: string;
+  autofocus?: boolean;
+  className?: string;
+  dataIsLoading?: boolean;
+}
+```
+
+## Behavior
+
+- Tags are created when you type a separator character (default: comma)
+- Tags are also created when you blur/leave the input field
+- Click on a tag to remove it
+- The input value is trimmed before creating a tag
+
+<Tip>
+  Set multiple separators to improve user experience: `separator={[',', ';', ' ']}` allows users to use comma, semicolon, or space to create tags.
+</Tip>
